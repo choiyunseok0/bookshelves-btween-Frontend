@@ -10,15 +10,14 @@
 
 ---
 
-
 ## 👥 멤버
 <br>
 
 | 리야 | 쵸파 | 큐큐 | 준오 |
 |:------:|:------:|:------:|:------:|
-| <img src="https://github.com/user-attachments/assets/b02bfb79-6203-4eb1-9b74-5ab140a50c69" width="200" height="300" alt="" /> | <img src="https://github.com/user-attachments/assets/a6417baa-0bc0-4489-927c-662839c24cd4" width="200" height="300" /> | <img src="https://github.com/user-attachments/assets/9c8a5f05-d7ea-4bac-bf65-41ec417caf55" width="200" height="300" alt="" /> |
+| <img src="https://github.com/user-attachments/assets/b02bfb79-6203-4eb1-9b74-5ab140a50c69" width="200" height="300" alt="" /> | <img src="https://github.com/user-attachments/assets/a6417baa-0bc0-4489-927c-662839c24cd4" width="200" height="300" /> | <img src="https://github.com/user-attachments/assets/9c8a5f05-d7ea-4bac-bf65-41ec417caf55" width="200" height="300" alt="" /> | <img src="https://github.com/user-attachments/assets/71f8ba62-5954-4d6f-a18f-c8251e5c7330" width="200" height="300" alt="" /> |
 | FE | FE | FE | FE |  
-| [GitHub](https://github.com/choiyunseok0) | [GitHub](https://github.com/gkswlals104) | [GitHub](https://github.com/junyear) |
+| [GitHub](https://github.com/choiyunseok0) | [GitHub](https://github.com/gkswlals104) | [GitHub](https://github.com/junyear) | [GitHub](https://github.com/Jsleeea) |
 
 <br>
 
@@ -94,12 +93,24 @@ Swift 6.3.3
 <table>
   <tr>
     <td>
-      사진 넣어주세요
+<img width="279" height="608" alt="image" src="https://github.com/user-attachments/assets/31c8f745-ce7b-4688-8765-eb8ea30d605f" />
     </td>
     <td>
-      사진 넣어주세요
+<img width="279" height="608" alt="image" src="https://github.com/user-attachments/assets/a56e45bd-6437-43ad-b1a2-7cc5d30b1dc4" />
     </td>
-   
+    <td>
+<img width="279" height="608" alt="image" src="https://github.com/user-attachments/assets/c8d304f5-bf0b-403a-a898-0a4503450bc6" />
+    </td>
+    <td>
+<img width="279" height="608" alt="image" src="https://github.com/user-attachments/assets/0c5748ad-34c0-44a4-8981-9fd30694adbd" />
+    </td>
+    <td>
+<img width="279" height="608" alt="image" src="https://github.com/user-attachments/assets/291abbee-1f52-4fa0-bdab-d664f43cb7db" />
+    </td>
+    <td>
+<img width="279" height="608" alt="image" src="https://github.com/user-attachments/assets/054c3ddc-8e2e-4ab6-b086-ca057a621674" />
+    </td>
+
   </tr>
 </table>
 
