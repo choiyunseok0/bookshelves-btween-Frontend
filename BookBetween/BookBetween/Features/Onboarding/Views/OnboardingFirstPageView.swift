@@ -19,10 +19,10 @@ struct OnboardingFirstPageView: View {
 
       VStack(spacing: 0) {
         Spacer()
-          .frame(height: 170)
+          .frame(height: 90)
 
         OnboardingTitleSection(page: self.page)
-          .padding(.bottom, 34)
+          .padding(.bottom, 41)
 
         Image("onboarding1")
           .resizable()
@@ -33,6 +33,7 @@ struct OnboardingFirstPageView: View {
       }
       .frame(maxWidth: .infinity, maxHeight: .infinity)
     }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
   }
 
   private var backgroundGradient: some View {
@@ -47,7 +48,7 @@ struct OnboardingFirstPageView: View {
         )
       )
       .frame(width: 660, height: 660)
-      .offset(x: -190, y: 155)
+      .offset(x: -194, y: -4)
       .ignoresSafeArea()
   }
 }

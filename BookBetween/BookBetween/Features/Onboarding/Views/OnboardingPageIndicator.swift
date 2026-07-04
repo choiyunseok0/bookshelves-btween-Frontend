@@ -16,7 +16,7 @@ struct OnboardingPageIndicator: View {
       ForEach(0..<self.totalPage, id: \.self) { index in
         Capsule()
           .fill(index == self.currentPage ? Color.green600 : Color.gray200)
-          .frame(width: index == self.currentPage ? 28 : 8, height: 8)
+          .frame(width: index == self.currentPage ? 32 : 8, height: 8)
       }
     }
   }

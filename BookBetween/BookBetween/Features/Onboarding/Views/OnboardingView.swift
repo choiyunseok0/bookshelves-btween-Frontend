@@ -11,17 +11,38 @@ struct OnboardingView: View {
   @StateObject private var viewModel = OnboardingViewModel()
 
   var body: some View {
-    self.currentPageView
-      .overlay(alignment: .top) {
-        self.topBar
-          .padding(.horizontal, 24)
-          .padding(.top, 70)
+    GeometryReader { geometry in
+      ZStack {
+        self.currentPageView
+          .frame(width: geometry.size.width, height: geometry.size.height)
+
+        VStack(spacing: 0) {
+          OnboardingTopBar(
+            backButtonAction: {
+            },
+            skipButtonAction: {
+              self.viewModel.skipButtonDidTap()
+            }
+          )
+          .padding(.horizontal, 20)
+
+          Spacer()
+        }
+        .frame(width: geometry.size.width, height: geometry.size.height)
+        .padding(.top, geometry.safeAreaInsets.top + 18)
+        .padding(.horizontal, 24)
+
+        VStack(spacing: 0) {
+          Spacer()
+
+          self.bottomControls
+        }
+        .frame(width: geometry.size.width, height: geometry.size.height)
+        .padding(.horizontal, 28)
+        .padding(.bottom, 32)
       }
-      .overlay(alignment: .bottom) {
-        self.bottomControls
-          .padding(.horizontal, 29)
-          .padding(.bottom, 32)
-      }
+      .frame(width: geometry.size.width, height: geometry.size.height)
+    }
     .frame(maxWidth: .infinity, maxHeight: .infinity)
   }
 
@@ -39,27 +60,6 @@ struct OnboardingView: View {
     }
   }
 
-  private var topBar: some View {
-    HStack {
-      Button {
-      } label: {
-        Image(systemName: "chevron.left")
-          .font(.system(size: 28, weight: .regular))
-          .foregroundStyle(Color.gray500)
-      }
-
-      Spacer()
-
-      Button {
-        self.viewModel.skipButtonDidTap()
-      } label: {
-        Text("건너뛰기")
-          .body2RegularStyle
-          .foregroundStyle(Color.gray500)
-      }
-    }
-  }
-
   private var bottomControls: some View {
     VStack(spacing: 0) {
       OnboardingPageIndicator(
@@ -71,7 +71,9 @@ struct OnboardingView: View {
       OnboardingBottomButton(title: self.viewModel.bottomButtonTitle) {
         self.viewModel.nextButtonDidTap()
       }
+      .padding(.horizontal, 28)
     }
+    .frame(maxWidth: .infinity)
   }
 
 }
