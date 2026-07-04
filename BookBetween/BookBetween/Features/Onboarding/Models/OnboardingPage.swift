@@ -5,19 +5,20 @@
 //  Created by 최윤석 on 7/4/26.
 //
 
-import Foundation
+import SwiftUI
 
 struct OnboardingPage: Identifiable {
   let id: Int
-  let title: String
-  let highlightedTitle: String?
+  let titleParts: [OnboardingTitlePart]
   let description: String
 
   var fullTitle: String {
-    guard let highlightedTitle else {
-      return self.title
-    }
-
-    return self.title + highlightedTitle
+    self.titleParts.map(\.text).joined()
   }
+}
+
+struct OnboardingTitlePart: Identifiable {
+  let id = UUID()
+  let text: String
+  let color: Color
 }

@@ -7,6 +7,7 @@
 
 import Combine
 import Foundation
+import SwiftUI
 
 final class OnboardingViewModel: ObservableObject {
   @Published var currentPageIndex: Int = 0
@@ -14,20 +15,26 @@ final class OnboardingViewModel: ObservableObject {
   let pages: [OnboardingPage] = [
     OnboardingPage(
       id: 0,
-      title: "익명으로 만나는 독서모임",
-      highlightedTitle: nil,
+      titleParts: [
+        OnboardingTitlePart(text: "익명으로 ", color: Color.green800),
+        OnboardingTitlePart(text: "만나는 ", color: Color.gray700),
+        OnboardingTitlePart(text: "독서모임", color: Color.gray800)
+      ],
       description: "관계에 지치지 않게,\n한 권의 책으로만 연결되는 대화"
     ),
     OnboardingPage(
       id: 1,
-      title: "AI와 함께하는 ",
-      highlightedTitle: "깊이있는 독서",
+      titleParts: [
+        OnboardingTitlePart(text: "AI와 함께하는 ", color: Color.gray800),
+        OnboardingTitlePart(text: "깊이있는 독서", color: Color.green700)
+      ],
       description: "질문, 요약, 인사이트까지\n읽고 생각하는 시간을 함께해요."
     ),
     OnboardingPage(
       id: 2,
-      title: "나만의 서재",
-      highlightedTitle: nil,
+      titleParts: [
+        OnboardingTitlePart(text: "나만의 서재", color: Color.gray800)
+      ],
       description: "읽은 책들을 기록하고,\n언제든 다시 꺼내볼 수 있게"
     )
   ]

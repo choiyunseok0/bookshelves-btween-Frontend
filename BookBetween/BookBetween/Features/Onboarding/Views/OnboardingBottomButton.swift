@@ -17,7 +17,7 @@ struct OnboardingBottomButton: View {
         .body1SemiBoldStyle
         .foregroundStyle(.white)
         .frame(maxWidth: .infinity)
-        .frame(height: 58)
+        .frame(height: 53)
         .background(Color.green800)
         .clipShape(RoundedRectangle(cornerRadius: 12))
     }

@@ -11,33 +11,31 @@ struct OnboardingView: View {
   @StateObject private var viewModel = OnboardingViewModel()
 
   var body: some View {
-    ZStack {
-      OnboardingBackgroundView()
-
-      VStack(spacing: 0) {
+    self.currentPageView
+      .overlay(alignment: .top) {
         self.topBar
-
-        Spacer()
-          .frame(height: 62)
-
-        self.titleSection
-
-        OnboardingPreviewCardView()
-
-        Spacer()
-
-        OnboardingPageIndicator(
-          currentPage: self.viewModel.currentPageIndex,
-          totalPage: self.viewModel.pages.count
-        )
-        .padding(.bottom, 32)
-
-        OnboardingBottomButton(title: self.viewModel.bottomButtonTitle) {
-          self.viewModel.nextButtonDidTap()
-        }
+          .padding(.horizontal, 24)
+          .padding(.top, 70)
       }
-      .padding(.horizontal, 24)
-      .padding(.bottom, 32)
+      .overlay(alignment: .bottom) {
+        self.bottomControls
+          .padding(.horizontal, 29)
+          .padding(.bottom, 32)
+      }
+    .frame(maxWidth: .infinity, maxHeight: .infinity)
+  }
+
+  @ViewBuilder
+  private var currentPageView: some View {
+    switch self.viewModel.currentPageIndex {
+    case 0:
+      OnboardingFirstPageView(page: self.viewModel.currentPage)
+
+    case 1:
+      OnboardingSecondPageView(page: self.viewModel.currentPage)
+
+    default:
+      OnboardingThirdPageView(page: self.viewModel.currentPage)
     }
   }
 
@@ -57,47 +55,25 @@ struct OnboardingView: View {
       } label: {
         Text("건너뛰기")
           .body2RegularStyle
-          .foregroundStyle(Color.gray600)
+          .foregroundStyle(Color.gray500)
       }
     }
-    .padding(.top, 24)
   }
 
-  private var titleSection: some View {
-    VStack(spacing: 16) {
-      self.titleText
+  private var bottomControls: some View {
+    VStack(spacing: 0) {
+      OnboardingPageIndicator(
+        currentPage: self.viewModel.currentPageIndex,
+        totalPage: self.viewModel.pages.count
+      )
+      .padding(.bottom, 32)
 
-      Text(self.viewModel.currentPage.description)
-        .body1RegularStyle
-        .foregroundStyle(Color.gray700)
-        .multilineTextAlignment(.center)
-    }
-    .padding(.bottom, 56)
-  }
-
-  @ViewBuilder
-  private var titleText: some View {
-    let page = self.viewModel.currentPage
-
-    Group {
-      if let highlightedTitle = page.highlightedTitle {
-        HStack(spacing: 0) {
-          Text(page.title)
-            .head2Style
-            .foregroundStyle(Color.gray900)
-
-          Text(highlightedTitle)
-            .head2Style
-            .foregroundStyle(Color.green800)
-        }
-      } else {
-        Text(page.title)
-          .head2Style
-          .foregroundStyle(Color.green800)
+      OnboardingBottomButton(title: self.viewModel.bottomButtonTitle) {
+        self.viewModel.nextButtonDidTap()
       }
     }
-    .multilineTextAlignment(.center)
   }
+
 }
 
 #Preview {
