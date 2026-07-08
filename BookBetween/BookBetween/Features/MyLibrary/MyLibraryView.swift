@@ -23,8 +23,8 @@ struct MyLibraryView: View {
 
 			ScrollView(showsIndicators: false) {
 				VStack(spacing: 12) {
-					ForEach(viewModel.filteredRecords.indices, id: \.self) { index in
-						MyLibraryBookCardView(record: viewModel.filteredRecords[index])
+					ForEach(viewModel.filteredRecords, id: \.book.id) { record in
+						MyLibraryBookCardView(record: record)
 					}
 				}
 				.padding(.horizontal, 20)
