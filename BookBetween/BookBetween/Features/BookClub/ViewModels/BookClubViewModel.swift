@@ -18,6 +18,14 @@ enum BookClubTab: CaseIterable {
 		case .search: return "모임 검색"
 		}
 	}
+
+	var horizontalPadding: CGFloat {
+		switch self {
+        case .myMeetings: return 17.5
+		case .createdMeetings: return 12
+		case .search: return 13
+		}
+	}
 }
 
 @Observable
@@ -51,7 +59,7 @@ final class BookClubViewModel {
 					id: "book-p-1",
 					title: "빛은 얼마나 깊이 스미는가",
 					author: "김초엽",
-					description: nil,
+					description: "우주의 끝에서 혼자 깨어난 과학자가 인류를 구하기 위해 사투를 벌이는 이야기. 인간과 외계 생명체의 우정을 따뜻하게 그려낸 SF 소설.",
 					thumbnailURL: nil,
 					thumbnailImageName: "book_cover_meeting_1"
 				),

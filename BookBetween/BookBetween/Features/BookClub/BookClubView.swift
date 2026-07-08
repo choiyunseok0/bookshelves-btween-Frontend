@@ -7,12 +7,12 @@ struct BookClubView: View {
 		VStack(spacing: 0) {
 			HStack {
 				Text("모임 관리")
-					.head1Style
+					.head2Style
 				Spacer()
 			}
-			.padding(.horizontal, 20)
-			.padding(.top, 12)
-			.padding(.bottom, 4)
+			.padding(.horizontal, 30)
+			.padding(.top, 17)
+			.padding(.bottom, 12)
 
 			tabSelector
 
@@ -28,10 +28,8 @@ struct BookClubView: View {
 					}
 				}
 				.padding(.horizontal, 20)
-				.padding(.top, 16)
-				.padding(.bottom, 24)
 			}
-			.scrollBounceBehavior(.basedOnSize)
+			.scrollBounceBehavior(.basedOnSize)  //콘텐츠가 뷰포트보다 클 때만 바운스
 		}
 		.toolbar(.hidden, for: .navigationBar)
 	}
@@ -45,8 +43,8 @@ struct BookClubView: View {
 					tabPill(for: tab)
 				}
 			}
-			.padding(.horizontal, 20)
-			.padding(.vertical, 12)
+			.padding(.horizontal, 30)
+            .padding(.bottom, 16)
 		}
 	}
 
@@ -56,10 +54,10 @@ struct BookClubView: View {
 		} label: {
 			Text(tab.title)
 				.caption1SemiBoldStyle
-				.foregroundStyle(viewModel.selectedTab == tab ? Color.white : Color.gray500)
-				.padding(.horizontal, 12)
-				.padding(.vertical, 6)
-				.background(viewModel.selectedTab == tab ? Color.green800 : Color.clear)
+				.foregroundStyle(viewModel.selectedTab == tab ? Color.beige100 : Color.gray300)
+				.padding(.horizontal, tab.horizontalPadding) //viewmodel horizontalpadding 프로퍼티 참고 //수정필요
+				.padding(.vertical, 6) //수정필요
+				.background(viewModel.selectedTab == tab ? Color.green600 : Color.clear)
 				.clipShape(Capsule())
 				.overlay {
 					if viewModel.selectedTab != tab {
@@ -71,7 +69,7 @@ struct BookClubView: View {
 	}
 
 	// MARK: - Content
-
+    //Content 수정필요
 	@ViewBuilder
 	private func meetingList(_ meetings: [BookMeeting]) -> some View {
 		ForEach(meetings, id: \.id) { meeting in
@@ -80,7 +78,7 @@ struct BookClubView: View {
 	}
 
 	private var searchContent: some View {
-		VStack(spacing: 16) {
+		VStack(spacing: 0) {
 			searchBar
 
 			if viewModel.searchText.isEmpty {
@@ -129,7 +127,7 @@ struct BookClubView: View {
 				.foregroundStyle(Color.gray400)
 				.padding(.bottom, 8)
 
-			NavigationLink(destination: BookMeetingCreateView()) {
+			NavigationLink(destination: BookMeetingCreateView(book: Book(id: "", title: "", author: ""))) {
 				HStack(spacing: 6) {
 					Image(systemName: "plus")
 					Text("모임 생성하기")
@@ -145,7 +143,7 @@ struct BookClubView: View {
 	}
 
 	// MARK: - Helpers
-
+    // Helpers 수정필요
 	private var searchTextBinding: Binding<String> {
 		Binding(
 			get: { viewModel.searchText },

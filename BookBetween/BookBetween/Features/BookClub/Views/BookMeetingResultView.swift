@@ -1,8 +1,3 @@
-//
-//  BookMeetingResultView.swift
-//  BookBetween
-//
-
 import SwiftUI
 
 struct BookMeetingResultView: View {
@@ -36,32 +31,72 @@ struct BookMeetingResultView: View {
 	}
 
 	var body: some View {
-		ScrollView(showsIndicators: false) {
-			VStack(alignment: .leading, spacing: 0) {
-				bookHeaderSection
-				discussionSection
-			}
-			.padding(.bottom, 40)
+		ZStack {
+			gradientBackground
+            leafDecoration
+            VStack(spacing: 0) {
+                HStack {
+                    Text("모임 관리")
+                        .head2Style
+                    Spacer()
+                }
+                .padding(.horizontal, 30)
+                .padding(.top, 17)
+                .padding(.bottom, 21)
+                
+                ScrollView(showsIndicators: false) {
+                    VStack(alignment: .leading, spacing: 12) {
+                        bookHeaderSection
+                        aiSummarySection
+                        discussionSection
+                    }
+                    .padding(.bottom, 40)
+                }
+            }
 		}
-		.navigationTitle("독서 모임")
 		.navigationBarTitleDisplayMode(.inline)
 	}
 
+	// MARK: - Background
+    // 수정필요
+	private var gradientBackground: some View {
+		LinearGradient(
+			colors: [
+				Color(hex: "DCEBE1").opacity(0.40),
+				Color.white
+			],
+			startPoint: .top,
+			endPoint: .bottom
+		)
+		.ignoresSafeArea()
+	}
+
+    // MARK: - LeafDecoration
+    //수정필요
+    private var leafDecoration: some View {
+        Image(.leaf2)
+            .resizable()
+            .scaledToFit()
+            .frame(width: 170)
+            .opacity(0.80)
+            .rotationEffect(.degrees(-7.87))
+            .offset(x: 100, y: -200)
+            .allowsHitTesting(false)
+    }
+    
 	// MARK: - Book Header
 
 	private var bookHeaderSection: some View {
 		ZStack(alignment: .topTrailing) {
-			leafDecoration
-
-			HStack(alignment: .top, spacing: 14) {
+			HStack(alignment: .top, spacing: 16) {
 				Image(meeting.book.thumbnailImageName ?? "book_cover_meeting_1")
 					.resizable()
 					.scaledToFill()
-					.frame(width: 100, height: 136)
+					.frame(width: 104, height: 160)
 					.clipped()
-					.shadow(color: .black.opacity(0.15), radius: 6, x: -3, y: 3)
+					.shadow(color: .black.opacity(0.15), radius: 6, x: -3, y: 3) //수정필요
 
-				VStack(alignment: .leading, spacing: 6) {
+				VStack(alignment: .leading, spacing: 8) {
 					Text(meeting.book.title)
 						.head3Style
 
@@ -69,14 +104,14 @@ struct BookMeetingResultView: View {
 						.caption1RegularStyle
 						.foregroundStyle(Color.gray500)
 
-					HStack(spacing: 4) {
+                    HStack(spacing: 3) {
 						Image(systemName: "star.fill")
 							.font(.caption)
 							.foregroundStyle(.yellow)
 						Text("4.5")
 							.body2RegularStyle
 					}
-					.padding(.bottom, 4)
+					.padding(.bottom, 2)
 
 					compactInfoRows
 				}
@@ -84,17 +119,6 @@ struct BookMeetingResultView: View {
 			.padding(.horizontal, 20)
 			.padding(.vertical, 20)
 		}
-	}
-
-	private var leafDecoration: some View {
-		Image(systemName: "leaf.fill")
-			.resizable()
-			.scaledToFit()
-			.frame(width: 130)
-			.foregroundStyle(Color(hex: "C8DDB8").opacity(0.55))
-			.rotationEffect(.degrees(-20))
-			.offset(x: 10, y: -16)
-			.allowsHitTesting(false)
 	}
 
 	private var compactInfoRows: some View {
@@ -118,37 +142,58 @@ struct BookMeetingResultView: View {
 		}
 	}
 
+	// MARK: - AI Summary
+
+	private var aiSummarySection: some View {
+		HStack(alignment: .top, spacing: 12) {
+			ZStack {
+				Circle()
+					.fill(Color.green50)
+					.frame(width: 36, height: 36)
+				Image("icon_sparkles")
+					.resizable()
+					.scaledToFit()
+					.frame(width: 18, height: 18)
+					.foregroundStyle(Color.green800)
+			}
+
+			VStack(alignment: .leading, spacing: 4) {
+				Text("AI 요약")
+					.caption1SemiBoldStyle
+					.foregroundStyle(Color.green800)
+
+				Text("AI가 주요 토론의 내용을 토대하여 핵심 내용을 3가지 주제로 정리했어요.")
+					.caption1RegularStyle
+					.foregroundStyle(Color.gray600)
+			}
+		}
+		.padding(14)
+		.background(Color.white.opacity(0.85))
+		.clipShape(RoundedRectangle(cornerRadius: 12))
+		.shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
+		.padding(.horizontal, 20)
+		.padding(.bottom, 24)
+	}
+
 	// MARK: - Discussion
 
 	private var discussionSection: some View {
 		VStack(spacing: 0) {
 			ForEach(discussion.topics.indices, id: \.self) { index in
 				topicRow(discussion.topics[index])
-				if index < discussion.topics.count - 1 {
-					Divider()
-						.padding(.horizontal, 20)
-				}
 			}
 		}
 	}
 
 	private func topicRow(_ topic: DiscussionTopic) -> some View {
-		VStack(alignment: .leading, spacing: 10) {
-			HStack(alignment: .top, spacing: 10) {
-				ZStack {
-					Circle()
-						.fill(Color.green800)
-						.frame(width: 24, height: 24)
-					Text("\(topic.id)")
-						.font(.system(size: 10, weight: .semibold))
-						.foregroundStyle(.white)
-				}
+		VStack(alignment: .leading, spacing: 8) {
+			Text(String(format: "%02d", topic.id))
+				.font(.system(size: 28, weight: .bold))
+				.foregroundStyle(Color.green600)
 
-				Text(topic.question)
-					.body1SemiBoldStyle
-					.foregroundStyle(Color.gray800)
-					.fixedSize(horizontal: false, vertical: true)
-			}
+			Text(topic.question)
+				.body1SemiBoldStyle
+				.foregroundStyle(Color.gray800)
 
 			Text(topic.content)
 				.body2RegularStyle
@@ -166,8 +211,8 @@ struct BookMeetingResultView: View {
 				id: "preview-result",
 				book: Book(
 					id: "book-1",
-					title: "혼모노",
-					author: "성해나",
+					title: "빛은 얼마나 깊이 스미는가",
+					author: "사브리나 임볼리",
 					description: nil,
 					thumbnailURL: nil,
 					thumbnailImageName: "book_cover_meeting_1"
@@ -179,7 +224,7 @@ struct BookMeetingResultView: View {
 				readingStartDate: Date(),
 				readingEndDate: Date(),
 				meetingDate: Date(),
-				timerMinutes: 60,
+				timerMinutes: 30,
 				maxParticipants: 6,
 				currentParticipants: 6,
 				status: .completed

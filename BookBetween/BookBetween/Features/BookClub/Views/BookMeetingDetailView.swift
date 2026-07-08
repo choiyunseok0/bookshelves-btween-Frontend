@@ -1,101 +1,121 @@
-//
-//  BookMeetingDetailView.swift
-//  BookBetween
-//
-
 import SwiftUI
 
 struct BookMeetingDetailView: View {
+    @Environment(\.dismiss) private var dismiss //탭시 이전화면으로 돌아감
+    
 	let meeting: BookMeeting
 
 	var body: some View {
 		VStack(spacing: 0) {
+            HStack(spacing: 12) {
+                Button {
+                    dismiss()
+                } label: {
+                    Image(.iconChevronRightGray2)
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 20, height: 20)
+                        .clipped()
+                }
+
+                Text("독서 모임 참여하기")
+                    .head2Style
+
+                Spacer()
+            }
+            .padding(.horizontal, 30)
+            .padding(.top, 1)
+            .padding(.bottom, 7)
+            
+            HStack{
+                Text("????")
+                    .caption1RegularStyle
+                    .foregroundStyle(Color.gray500)
+                Spacer()
+            }
+            .padding(.horizontal, 62)
+            .padding(.bottom, 12)
+            
 			ScrollView(showsIndicators: false) {
 				VStack(alignment: .leading, spacing: 0) {
-					bookHeader
-					meetingDescriptionText
+					bookHeaderSection
+					descriptionText
 					meetingInfoSection
-					noticeSection
 				}
 				.padding(.bottom, 20)
 			}
 
 			bottomButton("모임 참여하기") {}
 		}
-		.navigationTitle("독서 모임")
-		.navigationBarTitleDisplayMode(.large)
+		.toolbar(.hidden, for: .navigationBar)
 	}
 
-	// MARK: - Views
+	// MARK: - Header
 
-	private var bookHeader: some View {
+	private var bookHeaderSection: some View {
 		HStack(alignment: .top, spacing: 14) {
-			Image(meeting.book.thumbnailImageName ?? "book_cover_meeting_1")
+			Image(meeting.book.thumbnailImageName ?? "book_cover_1")
 				.resizable()
 				.scaledToFill()
-				.frame(width: 120, height: 160)
+				.frame(width: 130, height: 189)
 				.clipped()
-				.shadow(color: .black.opacity(0.15), radius: 6, x: -3, y: 3)
+				.shadow(color: .black.opacity(0.1), radius: 4, x: -4, y: 4)
 
-			VStack(alignment: .leading, spacing: 8) {
+			VStack(alignment: .leading, spacing: 6) {
 				Text(meeting.book.title)
-					.head3Style
+					.head1Style
 
 				Text(meeting.book.author)
-					.caption1RegularStyle
+					.caption1RegularStyle //수정필요
 					.foregroundStyle(Color.gray500)
 
-				HStack(spacing: 4) {
-					Image(systemName: "star.fill")
-						.font(.caption)
-						.foregroundStyle(.yellow)
-					Text("4.5")
-						.body2RegularStyle
+				if let genre = meeting.book.genre {
+					Text(genre)
+						.caption1SemiBoldStyle
+						.foregroundStyle(Color.white)
+						.padding(.horizontal, 10)
+						.padding(.vertical, 2)
+						.background(Color.green600)
+						.clipShape(Capsule())
 				}
-
-				Text(meeting.book.description ?? "끝없이 '진짜'와 '가짜'의 사이를 오가며 '혼모노'란 무엇인지 그 경계에서 질문을 던지는 소설")
-					.body2RegularStyle
-					.foregroundStyle(Color.gray600)
-					.lineLimit(4)
 			}
 		}
-		.padding(.horizontal, 20)
-		.padding(.top, 4)
+        .padding(.horizontal, 30)
+        .padding(.bottom, 21) //피그마수정필요
 	}
 
-	private var meetingDescriptionText: some View {
-		Text("\(meeting.timerMinutes)분 동안 이루어지는 책에 대한 깊은 대화")
-			.caption1RegularStyle
-			.foregroundStyle(Color.gray500)
-			.padding(.horizontal, 20)
-			.padding(.top, 10)
+	@ViewBuilder
+	private var descriptionText: some View {
+		if let description = meeting.book.description, !description.isEmpty {
+			Text(description)
+				.body2RegularStyle
+				.foregroundStyle(Color.gray600)
+				.padding(.horizontal, 20)
+				.padding(.top, 16)
+		}
 	}
+
+	// MARK: - Meeting Info
 
 	private var meetingInfoSection: some View {
 		VStack(alignment: .leading, spacing: 12) {
-			HStack(spacing: 6) {
-				Image("icon_calendar")
-				Text("모임정보")
-					.body1SemiBoldStyle
-			}
+			Text("모임정보")
+				.body1SemiBoldStyle
+				.padding(.horizontal, 20)
 
 			meetingInfoCard
+				.padding(.horizontal, 20)
 		}
-		.padding(.horizontal, 20)
 		.padding(.top, 24)
 	}
 
 	private var meetingInfoCard: some View {
 		VStack(spacing: 0) {
-			infoRow(icon: { Image("icon_calendar") }, label: "모집 기간", value: dateRangeText(meeting.recruitmentStartDate, meeting.recruitmentEndDate))
-			Divider()
-			infoRow(icon: { Image("icon_calendar") }, label: "독서 기간", value: dateRangeText(meeting.readingStartDate, meeting.readingEndDate))
-			Divider()
 			infoRow(icon: { Image("icon_calendar") }, label: "모임 날짜", value: meetingDateText)
 			Divider()
 			infoRow(icon: { Image(systemName: "clock").foregroundStyle(Color.gray500) }, label: "타이머 시간", value: "\(meeting.timerMinutes)분")
 			Divider()
-			infoRow(icon: { Image("icon_group") }, label: "참여자", value: "\(meeting.maxParticipants)명")
+			infoRow(icon: { Image("icon_group") }, label: "참여자", value: "\(meeting.currentParticipants)/\(meeting.maxParticipants)명")
 		}
 		.background(.white)
 		.clipShape(RoundedRectangle(cornerRadius: 12))
@@ -124,37 +144,7 @@ struct BookMeetingDetailView: View {
 		.padding(.vertical, 14)
 	}
 
-	private var noticeSection: some View {
-		HStack(alignment: .top, spacing: 10) {
-			Image(systemName: "leaf.fill")
-				.foregroundStyle(Color.green600)
-				.font(.caption)
-				.padding(.top, 2)
-
-			VStack(alignment: .leading, spacing: 4) {
-				Text("모임은 타이머 설정 시간 만료 후  자동으로 폭파돼요.")
-					.caption1SemiBoldStyle
-					.foregroundStyle(Color.gray700)
-
-				Text("편안하고 안전한 대화를 위해 최소인원 3명 이상이 필요해요.")
-					.caption1RegularStyle
-					.foregroundStyle(Color.gray500)
-			}
-		}
-		.padding(12)
-		.background(Color.green50)
-		.clipShape(RoundedRectangle(cornerRadius: 10))
-		.padding(.horizontal, 20)
-		.padding(.top, 16)
-	}
-
 	// MARK: - Helpers
-
-	private func dateRangeText(_ start: Date, _ end: Date) -> String {
-		let formatter = DateFormatter()
-		formatter.dateFormat = "MM/dd"
-		return "\(formatter.string(from: start)) - \(formatter.string(from: end))"
-	}
 
 	private var meetingDateText: String {
 		let formatter = DateFormatter()
@@ -192,7 +182,8 @@ func bottomButton(_ title: String, action: @escaping () -> Void) -> some View {
 					author: "성해나",
 					description: "끝없이 '진짜'와 '가짜'의 사이를 오가며 '혼모노'란 무엇인지 그 경계에서 질문을 던지는 소설",
 					thumbnailURL: nil,
-					thumbnailImageName: "book_cover_meeting_1"
+					thumbnailImageName: "book_cover_1",
+					genre: "#한국소설"
 				),
 				title: nil,
 				description: "",
