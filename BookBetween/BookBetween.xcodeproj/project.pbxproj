@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		6CAEA7B32FFD354B008AE9CA /* Moya in Frameworks */ = {isa = PBXBuildFile; productRef = 6CAEA7B22FFD354B008AE9CA /* Moya */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		6CC2D3F62FEC2E1C006EEB29 /* BookBetween.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BookBetween.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6CAEA7B32FFD354B008AE9CA /* Moya in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 			);
 			name = BookBetween;
 			packageProductDependencies = (
+				6CAEA7B22FFD354B008AE9CA /* Moya */,
 			);
 			productName = BookBetween;
 			productReference = 6CC2D3F62FEC2E1C006EEB29 /* BookBetween.app */;
@@ -107,6 +113,9 @@
 			);
 			mainGroup = 6CC2D3ED2FEC2E1C006EEB29;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				6CAEA7B12FFD354B008AE9CA /* XCRemoteSwiftPackageReference "Moya" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6CC2D3F72FEC2E1C006EEB29 /* Products */;
 			projectDirPath = "";
@@ -353,6 +362,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6CAEA7B12FFD354B008AE9CA /* XCRemoteSwiftPackageReference "Moya" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Moya/Moya";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 15.0.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6CAEA7B22FFD354B008AE9CA /* Moya */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6CAEA7B12FFD354B008AE9CA /* XCRemoteSwiftPackageReference "Moya" */;
+			productName = Moya;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6CC2D3EE2FEC2E1C006EEB29 /* Project object */;
 }

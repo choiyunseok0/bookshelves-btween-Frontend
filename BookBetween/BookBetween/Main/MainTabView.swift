@@ -11,36 +11,40 @@ struct MainTabView: View {
     @State private var selectedTab: TabCase = .home
 
     var body: some View {
-        TabView(selection: $selectedTab) { // 추후 알림에 따른 화면 전환 등 새로운 로직 발생시 NavigationPath로 확장
-            NavigationStack {
-                HomeView()
-            }
-            .tag(TabCase.home)
+        ZStack(alignment: .bottom) {
+            TabView(selection: $selectedTab) {
+                NavigationStack {
+                    HomeView()
+                }
+                .tag(TabCase.home)
 
-            NavigationStack {
-                SearchView()
-            }
-            .tag(TabCase.search)
+                NavigationStack {
+                    SearchView()
+                }
+                .tag(TabCase.search)
 
-            NavigationStack {
-                BookClubView()
-            }
-            .tag(TabCase.bookClub)
+                NavigationStack {
+                    BookClubView()
+                }
+                .tag(TabCase.bookClub)
 
-            NavigationStack {
-                MyLibraryView()
-            }
-            .tag(TabCase.myLibrary)
+                NavigationStack {
+                    MyLibraryView()
+                }
+                .tag(TabCase.myLibrary)
 
-            NavigationStack {
-                ProfileView()
+                NavigationStack {
+                    ProfileView()
+                }
+                .tag(TabCase.profile)
             }
-            .tag(TabCase.profile)
-        }
-        .toolbar(.hidden, for: .tabBar)
-        .safeAreaInset(edge: .bottom, spacing: 0) {
+            .toolbar(.hidden, for: .tabBar)
+            .ignoresSafeArea(.keyboard, edges: .bottom)
+
             CustomTabBar(selectedTab: $selectedTab)
+                .ignoresSafeArea(.keyboard, edges: .bottom)
         }
+        .ignoresSafeArea(.keyboard, edges: .bottom)
     }
 }
 

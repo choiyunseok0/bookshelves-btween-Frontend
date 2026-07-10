@@ -44,6 +44,13 @@ extension Text {
     var caption1RegularStyle: some View { applyAppStyle(.caption1Regular, size: 12, lineHeightPercent: 145, letterSpacingPercent: 0) }
     var caption2SemiBoldStyle: some View { applyAppStyle(.caption2SemiBold, size: 10, lineHeightPercent: 145, letterSpacingPercent: 0) }
     var caption2RegularStyle: some View { applyAppStyle(.caption2Regular, size: 10, lineHeightPercent: 145, letterSpacingPercent: 0) }
+
+    // Point Text 시리즈 (RIDIBatang / Line Height: 130%)
+    var pointText1Style: some View { applyAppStyle(.custom("RIDIBatang", size: 24), size: 24, lineHeightPercent: 130, letterSpacingPercent: -0.3) }
+    var pointText2Style: some View { applyAppStyle(.custom("RIDIBatang", size: 22), size: 22, lineHeightPercent: 130, letterSpacingPercent: -0.3) }
+    var pointText3Style: some View { applyAppStyle(.custom("RIDIBatang", size: 20), size: 20, lineHeightPercent: 130, letterSpacingPercent: -0.3) }
+    var pointText4Style: some View { applyAppStyle(.custom("RIDIBatang", size: 18), size: 18, lineHeightPercent: 130, letterSpacingPercent: -0.3) }
+    var pointText5Style: some View { applyAppStyle(.custom("RIDIBatang", size: 16), size: 16, lineHeightPercent: 130, letterSpacingPercent: -0.2) }
 }
 
 /* 사용 예시
@@ -55,6 +62,10 @@ extension Text {
 
     Text("나중에 수정할 수 있어요")
         .body2RegularStyle
+        .foregroundColor(.gray200)
+
+    Text("리비바탕")
+        .pointText1Style
         .foregroundColor(.gray200)
  }
  

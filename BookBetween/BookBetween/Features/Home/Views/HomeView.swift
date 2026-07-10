@@ -25,7 +25,7 @@ struct HomeView: View {
     private var UserTitleView: some View {
         HStack{
             Text("\(viewModel.home.user.nickname)의 책장")
-                .head1Style
+                .pointText1Style
             Spacer()
         }
         .padding(.leading, 10)
@@ -39,18 +39,15 @@ struct HomeView: View {
             RoundedRectangle(cornerRadius: 12)
                 .fill(
                     LinearGradient(
-                        colors: [
-                            Color(hex: "FFE4C2"),
-                            Color(hex: "CCE1D2")
+                        stops: [
+                            Gradient.Stop(color: Color(hex: "FEE7C4"), location: 0.0),
+                            Gradient.Stop(color: Color(hex: "EEF8F0"), location: 0.45),
+                            Gradient.Stop(color: Color(hex: "DDEFFF"), location: 1.0)
                         ],
-                        startPoint:. top,
-                        endPoint:. bottom
+                        startPoint: .bottomLeading,
+                        endPoint: .topTrailing
                     )
                 )
-                .overlay {
-                    RoundedRectangle(cornerRadius: 12)
-                        .stroke(Color(.gray300), lineWidth: 1)
-                }
                 .shadow(color: .black.opacity(0.1), radius: 2, x: -4, y: 4)
             HStack{
                 VStack(alignment: .leading){
@@ -65,7 +62,7 @@ struct HomeView: View {
                         .foregroundStyle(.gray600)
                     Spacer()
                     Text(recommendation.book.title)
-                        .head3Style
+                        .pointText4Style
                         .foregroundStyle(.gray800)
                     Text(recommendation.book.author)
                         .caption2RegularStyle
@@ -108,16 +105,6 @@ struct HomeView: View {
                 Text("최근 본 책")
                     .body1SemiBoldStyle
                 Spacer()
-                Button {
-                    
-                }label: {
-                    HStack{
-                        Text("전체보기")
-                            .body2RegularStyle
-                            .foregroundStyle(.gray500)
-                        Image("icon_chevron_right_gray")
-                    }
-                }
             }
             ForEach(viewModel.home.recentBooks, id: \.book.id) { record in
                 RecentBookCardView(record: record)
