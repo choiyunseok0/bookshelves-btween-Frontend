@@ -11,5 +11,5 @@ struct Home {
     let user: User
     let dailyRecommendation: DailyBookRecommendation
     let recentBooks: [UserBookRecord]
-    let recruitingMeetings: [BookMeeting]
+    var recruitingMeetings: [BookMeeting]
 }

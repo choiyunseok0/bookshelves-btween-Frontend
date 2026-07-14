@@ -17,23 +17,13 @@ struct MeetingCardView: View {
                 Image(meeting.book.thumbnailImageName ?? "book_cover_meeting_1")
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 70, height: 108)
+                    .frame(width: 71, height: 108)
                     .shadow(color: .black.opacity(0.1), radius: 1.19453, x: -2.38905, y: 2.38905)
 
-                VStack(alignment: .leading, spacing: 7) {
-                    Text(meeting.status.title)
-                        .caption1SemiBoldStyle
-                        .foregroundStyle(.green600)
-                        .padding(.horizontal, 8)
-                        .padding(.vertical, 2)
-                        .background(.green50)
-                        .clipShape(Capsule())
-                        .offset(y: 4)
-                    
-                    
+                VStack(alignment: .leading, spacing: 0) {
                     Text(meeting.book.title)
                         .head3Style
-                        //.lineLimit(1)
+                        .lineLimit(1)
                     
                     HStack {
                         Image("icon_calendar")
@@ -45,6 +35,7 @@ struct MeetingCardView: View {
                             .caption2RegularStyle
                     }
                     .foregroundStyle(.gray500)
+                    .padding(.top, 20)
                     
                     HStack(spacing: 8) {
                         Image("icon_group")
@@ -55,12 +46,12 @@ struct MeetingCardView: View {
                             .caption2RegularStyle
                     }
                     .foregroundStyle(.gray500)
+                    .padding(.top, 6)
                 }
-                
                 .padding(.leading, 35)
                 Spacer()
             }
-            .padding(.leading, 25)
+            .padding(.leading, 24)
             .padding(.top, 13)
             .padding(.bottom, 4)
             
@@ -87,6 +78,9 @@ struct MeetingCardView: View {
                 )
             }
         }
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+        .padding(.horizontal, 2) // 참여하기 버튼 밑 흰색 여백
+        .padding(.bottom, 2)
         .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 12))
         .overlay {

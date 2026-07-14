@@ -18,6 +18,11 @@ struct SearchView: View {
                 SearchInputSectionView
                 SearchResultSectionView
             }
+            .scrollDismissesKeyboard(.interactively)
+            .contentShape(Rectangle())
+            .onTapGesture {
+                isSearchFocused = false
+            }
             .padding(.horizontal, 19)
             .padding(.top, 12)
             .padding(.bottom, 24)
@@ -26,6 +31,7 @@ struct SearchView: View {
         .ignoresSafeArea(.keyboard, edges: .bottom)
     }
     
+    // MARK: 도서검색 TITLE
     private var TitleView: some View {
         HStack {
             Text("도서 검색")
@@ -33,23 +39,27 @@ struct SearchView: View {
                 .foregroundStyle(Color.gray900)
             Spacer()
         }
-        .padding(.leading, 12)
+        .padding(.leading, 11) // 11 + 19 = 30
     }
     
+    // MARK: - 검색 바
     private var SearchInputSectionView: some View {
         VStack(spacing: 0) {
             SearchBarView
 
             if !viewModel.recentKeywords.isEmpty {
+                Divider()
+                    .background(.gray200)
+                    .padding(.horizontal, 20)
                 RecentSearchListView
             }
         }
         .background(Color.white)
         .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay {
+        .overlay(
             RoundedRectangle(cornerRadius: 12)
-                .stroke(.gray200, lineWidth: 0.5)
-        }
+                .stroke(Color.gray200, lineWidth: 0.5)
+        )
         .shadow(color: .black.opacity(0.12), radius: 4, x: 0, y: 2)
     }
     
@@ -60,7 +70,7 @@ struct SearchView: View {
 
             TextField("검색어를 입력하세요", text: $viewModel.searchText)
                 .font(.body1Regular)
-                .foregroundStyle(Color.gray500)
+                .foregroundStyle(Color.gray800)
                 .focused($isSearchFocused)
                 .onSubmit {
                     viewModel.submitSearch()
@@ -68,12 +78,6 @@ struct SearchView: View {
         }
         .frame(height: 46)
         .padding(.horizontal, 11)
-        .background(Color.white)
-        .clipShape(RoundedRectangle(cornerRadius: 12))
-        .overlay {
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(.gray200, lineWidth: 0.8)
-        }
     }
     
     private var RecentSearchListView: some View {
