@@ -11,6 +11,15 @@ struct SearchBookResultCardView: View {
     let book: Book
 
     var body: some View {
+        NavigationLink {
+            BookRecordDetailView(book: book)
+        } label: {
+            cardContent
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var cardContent: some View {
         HStack(alignment: .top, spacing: 10) {
             Image(book.thumbnailImageName ?? "book_cover_meeting_2")
                 .resizable()
@@ -38,16 +47,12 @@ struct SearchBookResultCardView: View {
 
             Spacer()
 
-            Button {
-            } label: {
-                HStack(spacing: 4) {
-                    Text("더보기")
-                        .caption1RegularStyle
-                    Image("icon_chevron_right_gray")
-                }
-                .foregroundStyle(Color.gray500)
+            HStack(spacing: 4) {
+                Text("더보기")
+                    .caption1RegularStyle
+                Image("icon_chevron_right_gray")
             }
-            .buttonStyle(.plain)
+            .foregroundStyle(Color.gray500)
             .padding(.top, 7)
         }
         .padding(.horizontal, 21)

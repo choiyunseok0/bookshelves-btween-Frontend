@@ -15,7 +15,9 @@ struct HomeView: View {
             VStack{
                 UserTitleView
                 RecommendationSection
-                RecentBookSection
+                if !viewModel.home.recentBooks.isEmpty {
+                    RecentBookSection
+                }
                 RecruitingMeetingSection
             }
             .padding(.horizontal, 19)
@@ -27,6 +29,13 @@ struct HomeView: View {
             Text("\(viewModel.home.user.nickname)의 책장")
                 .pointText1Style
             Spacer()
+            Button {
+                //go to alert view
+            } label: {
+                Image("icon_bell")
+                    .resizable()
+                    .frame(width: 24, height: 26)
+            }
         }
         .padding(.leading, 10)
     }
@@ -69,8 +78,15 @@ struct HomeView: View {
                         .foregroundStyle(.gray600)
 
                     Spacer()
-                    Button{
-                        //책읽기 화면으로 이동
+                    NavigationLink {
+                        BookRecordDetailView(
+                            record: UserBookRecord(
+                                book: recommendation.book,
+                                progress: 0,
+                                oneLineReview: nil,
+                                rating: nil
+                            )
+                        )
                     } label: {
                         HStack{
                             Text("책 읽으러 가기")
@@ -83,6 +99,7 @@ struct HomeView: View {
                         .background(.green800)
                         .clipShape(Capsule())
                     }
+                    .buttonStyle(.plain)
                 }
                 .padding(.vertical, 18)
                 .padding(.leading, 19)
@@ -107,7 +124,12 @@ struct HomeView: View {
                 Spacer()
             }
             ForEach(viewModel.home.recentBooks, id: \.book.id) { record in
-                RecentBookCardView(record: record)
+                NavigationLink {
+                    BookRecordDetailView(record: record)
+                } label: {
+                    RecentBookCardView(record: record)
+                }
+                .buttonStyle(.plain)
             }
         }
         .padding(.top, 20)
@@ -121,6 +143,13 @@ struct HomeView: View {
                 VStack{
                 ForEach(viewModel.home.recruitingMeetings, id: \.id) { meeting in
                     MeetingCardView(meeting: meeting)
+                        .onAppear {
+                            viewModel.loadMoreMeetingsIfNeeded(currentItem: meeting)
+                        }
+                }
+                if viewModel.isLoadingMoreMeetings {
+                    ProgressView()
+                        .padding(.top, 8)
                 }
             }
         }

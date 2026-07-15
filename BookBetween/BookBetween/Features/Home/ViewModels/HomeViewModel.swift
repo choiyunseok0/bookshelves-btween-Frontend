@@ -12,6 +12,11 @@ import Observation
 final class HomeViewModel {
     var home: Home
 
+    private let meetingsPageSize = 3
+    private var currentMeetingsPage = 1
+    var isLoadingMoreMeetings = false
+    var hasMoreMeetings = true
+
     init() {
         self.home = Home(
             user: User(id: "1", nickname: "책 먹는 여우", profileImageURL: nil),
@@ -88,5 +93,29 @@ final class HomeViewModel {
                 )
             ]
         )
+    }
+
+    /// 무한 스크롤 트리거: 마지막에서 가까운 카드가 나타나면 다음 페이지를 불러옴.
+    func loadMoreMeetingsIfNeeded(currentItem: BookMeeting) {
+        guard !isLoadingMoreMeetings, hasMoreMeetings else { return }
+        let thresholdIndex = home.recruitingMeetings.index(
+            home.recruitingMeetings.endIndex, offsetBy: -1
+        )
+        guard let currentIndex = home.recruitingMeetings.firstIndex(where: { $0.id == currentItem.id }),
+              currentIndex == thresholdIndex else { return }
+        loadMoreMeetings()
+    }
+
+    private func loadMoreMeetings() {
+        isLoadingMoreMeetings = true
+        Task {
+            // TODO: 추후 API 연동 시 아래를 실제 네트워크 호출로 교체 예정
+            // let page = try await meetingService.fetchRecruitingMeetings(page: currentMeetingsPage, size: meetingsPageSize)
+            // home.recruitingMeetings.append(contentsOf: page.items)
+            // hasMoreMeetings = page.hasNext
+            hasMoreMeetings = false // 목데이터 소진 - 실제 API 붙이면 서버 응답의 hasNext로 대체
+            currentMeetingsPage += 1
+            isLoadingMoreMeetings = false
+        }
     }
 }

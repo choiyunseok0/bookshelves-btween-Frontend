@@ -49,12 +49,12 @@ struct MyLibraryBookCardView: View {
 				Text(record.book.title)
 					.body2SemiBoldStyle
 					.lineLimit(2)
-				Spacer()
-				NavigationLink {
-					BookRecordEditView(record: record)
-				} label: {
-					Text("더보기 >")
-						.caption2RegularStyle
+					Spacer()
+					NavigationLink {
+						BookRecordDetailView(record: record)
+					} label: {
+						Text("더보기 >")
+							.caption2RegularStyle
 						.foregroundStyle(Color.gray400)
 				}
 			}
