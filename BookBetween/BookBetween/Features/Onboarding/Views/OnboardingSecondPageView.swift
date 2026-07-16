@@ -37,7 +37,7 @@ struct OnboardingSecondPageView: View {
   private var contentView: some View {
     VStack(spacing: 0) {
       Spacer()
-        .frame(height: 90)
+        .frame(height: 83)
 
       OnboardingTitleSection(page: self.page)
         .padding(.bottom, 73)
@@ -55,7 +55,7 @@ struct OnboardingSecondPageView: View {
     Image("onboarding2")
       .resizable()
       .scaledToFit()
-      .frame(width: 548, height: 304)
+      .frame(width: 556, height: 310)
   }
 
   // MARK: - 왼쪽 나뭇잎 이미지
@@ -65,7 +65,7 @@ struct OnboardingSecondPageView: View {
       .resizable()
       .scaledToFit()
       .frame(width: 183.28, height: 273.36)
-      .position(x: 164.36, y: 629.68)
+      .position(x: 155, y: 610.68)
   }
 
   // MARK: - 오른쪽 나뭇잎 이미지
@@ -117,13 +117,6 @@ struct OnboardingSecondPageView: View {
 
 #Preview {
   OnboardingSecondPageView(
-    page: OnboardingPage(
-      id: 1,
-      titleParts: [
-        OnboardingTitlePart(text: "AI와 함께하는 ", color: Color.gray900),
-        OnboardingTitlePart(text: "깊이있는 독서", color: Color.green800)
-      ],
-      description: "질문, 요약, 인사이트까지\n읽고 생각하는 시간을 함께해요."
-    )
+    page: OnboardingViewModel().pages[1]
   )
 }

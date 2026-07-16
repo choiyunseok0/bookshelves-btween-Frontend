@@ -23,10 +23,10 @@ struct OnboardingFirstPageView: View {
 
       VStack(spacing: 0) {
         Spacer()
-          .frame(height: 90)
+          .frame(height: 98)
 
         OnboardingTitleSection(page: self.page)
-          .padding(.bottom, 41)
+          .padding(.bottom, 43)
 
         Image("onboarding1")
           .resizable()
@@ -61,14 +61,6 @@ struct OnboardingFirstPageView: View {
 
 #Preview {
   OnboardingFirstPageView(
-    page: OnboardingPage(
-      id: 0,
-      titleParts: [
-        OnboardingTitlePart(text: "익명으로 ", color: Color.gray800),
-        OnboardingTitlePart(text: "만나는 ", color: Color.gray700),
-        OnboardingTitlePart(text: "독서모임", color: Color.gray800)
-      ],
-      description: "관계에 지치지 않게,\n한 권의 책으로만 연결되는 대화"
-    )
+    page: OnboardingViewModel().pages[0]
   )
 }
