@@ -15,6 +15,7 @@ struct OnboardingView: View {
       ZStack {
         self.currentPageView
           .frame(width: geometry.size.width, height: geometry.size.height)
+          .ignoresSafeArea()
 
         VStack(spacing: 0) {
           OnboardingTopBar(
@@ -71,7 +72,7 @@ struct OnboardingView: View {
       OnboardingBottomButton(title: self.viewModel.bottomButtonTitle) {
         self.viewModel.nextButtonDidTap()
       }
-      .padding(.horizontal, 28)
+      .padding(.horizontal, 29)
     }
     .frame(maxWidth: .infinity)
   }
