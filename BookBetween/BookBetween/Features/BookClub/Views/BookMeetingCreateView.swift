@@ -101,9 +101,7 @@ struct BookMeetingCreateView: View {
 
 	private var bookHeaderSection: some View {
 		HStack(alignment: .center, spacing: 16) {
-			Image(book.thumbnailImageName ?? "book_cover_01") //수정필요
-				.resizable()
-				.scaledToFill()
+			BookCoverImage(book: book, placeholderImageName: "book_cover_01")
 				.frame(width: 110, height: 160) //수정필요
 				.clipped()
 				.shadow(color: .black.opacity(0.1), radius: 4, x: -4, y: 4)
@@ -119,8 +117,8 @@ struct BookMeetingCreateView: View {
 					.foregroundStyle(Color.gray500)
                     .padding(.bottom, 4)
 
-				if let genre = book.genre {
-					Text(genre)
+				if let kdcName = book.kdcName {
+					Text(kdcName)
 						.caption1SemiBoldStyle
 						.foregroundStyle(Color.white)
 						.padding(.horizontal, 10)
@@ -420,13 +418,12 @@ struct BookMeetingCreateView: View {
 	NavigationStack {
 		BookMeetingCreateView(
 			book: Book(
-				id: "book-create",
+				id: 1,
 				title: "혼모노",
 				author: "성해나",
 				publisher: "창비",
 				description: "성해나 작가의 단편 소설집 『혼모노』는 진짜와 가짜, 믿음에 대한 날카로운 질문을 던지는 작품입니다.\n표제작 『혼모노』는 신발을 읽고 20대 애기 무당에게 자리를 빼앗긴 베테랑 무당이 진정한 자신의 정체성을 찾아가는 과정을 그립니다.",
-				thumbnailImageName: "book_cover_01",
-				genre: "#한국소설"
+				kdcName: "한국소설"
 			)
 		)
 	}

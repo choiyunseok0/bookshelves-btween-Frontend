@@ -23,7 +23,7 @@ struct MyLibraryView: View {
 
 			ScrollView(showsIndicators: false) {
 				VStack(spacing: 12) {
-					ForEach(viewModel.filteredRecords, id: \.book.id) { record in
+					ForEach(viewModel.filteredRecords, id: \.id) { record in
 						MyLibraryBookCardView(record: record)
 					}
 				}

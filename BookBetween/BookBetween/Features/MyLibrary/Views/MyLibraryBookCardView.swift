@@ -15,7 +15,7 @@ struct MyLibraryBookCardView: View {
 				bookInfo
 			}
 
-			if let quote = record.oneLineReview, !quote.isEmpty {
+			if let quote = record.memo, !quote.isEmpty {
 				Text("\u{201C}\(quote)\u{201D}")
 					.caption1RegularStyle
 					.foregroundStyle(Color.gray500)
@@ -35,9 +35,7 @@ struct MyLibraryBookCardView: View {
 	// MARK: - Views
 
 	private var bookCover: some View {
-		Image(record.book.thumbnailImageName ?? "book_cover_meeting_1")
-			.resizable()
-			.scaledToFill()
+		BookCoverImage(book: record.book, placeholderImageName: "book_cover_meeting_1")
 			.frame(width: 64, height: 88)
 			.clipped()
 			.shadow(color: .black.opacity(0.1), radius: 2, x: -1, y: 1)
@@ -80,7 +78,7 @@ struct MyLibraryBookCardView: View {
 		HStack(spacing: 6) {
 			GeometryReader { geo in
 				let width = geo.size.width
-				let filled = width * CGFloat(record.progress)
+				let filled = width * CGFloat(record.progress) / 100
 				ZStack(alignment: .leading) {
 					Capsule()
 						.fill(Color.gray200)
@@ -100,7 +98,7 @@ struct MyLibraryBookCardView: View {
 			}
 			.frame(height: 10)
 
-			Text("\(Int(record.progress * 100))%")
+			Text("\(record.progress)%")
 				.caption2RegularStyle
 				.foregroundStyle(Color.gray500)
 				.frame(width: 32, alignment: .trailing)

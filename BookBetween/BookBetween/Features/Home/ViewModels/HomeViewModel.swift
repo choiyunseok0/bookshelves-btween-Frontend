@@ -22,40 +22,35 @@ final class HomeViewModel {
             user: User(id: "1", nickname: "책 먹는 여우", profileImageURL: nil),
             dailyRecommendation: DailyBookRecommendation(
                 book: Book(
-                    id: "recommend-1",
+                    id: 1,
                     title: "랑과 나의 사막",
                     author: "천선란",
-                    description: nil,
-                    thumbnailURL: nil,
-                    thumbnailImageName: "book_cover_recommend"
+                    description: nil
                 ),
                 description: "멸망한 세계의 어느날 나의 주인이 죽었다"
             ),
             recentBooks: [
                 UserBookRecord(
+                    id: 1,
                     book: Book(
-                        id: "recent-1",
+                        id: 2,
                         title: "아무 희미한 빛으로도",
                         author: "최은영",
-                        description: nil,
-                        thumbnailURL: nil,
-                        thumbnailImageName: "book_cover_recent"
+                        description: nil
                     ),
-                    progress: 0.75,
-                    oneLineReview: nil,
-                    rating: 4.5
+                    progress: 75,
+                    rating: 4.5,
+                    memo: nil
                 )
             ],
             recruitingMeetings: [
                 BookMeeting(
                     id: "meeting-1",
                     book: Book(
-                        id: "meeting-book-1",
+                        id: 3,
                         title: "빛은 얼마나 깊이 스미는가",
                         author: "",
-                        description: nil,
-                        thumbnailURL: nil,
-                        thumbnailImageName: "book_cover_meeting_1"
+                        description: nil
                     ),
                     title: nil,
                     description: "",
@@ -72,12 +67,10 @@ final class HomeViewModel {
                 BookMeeting(
                     id: "meeting-2",
                     book: Book(
-                        id: "meeting-book-2",
+                        id: 4,
                         title: "프로젝트 헤일미리",
                         author: "",
-                        description: nil,
-                        thumbnailURL: nil,
-                        thumbnailImageName: "book_cover_meeting_2"
+                        description: nil
                     ),
                     title: nil,
                     description: "",

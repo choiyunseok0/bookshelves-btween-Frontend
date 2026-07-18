@@ -100,9 +100,7 @@ struct BookMeetingDetailView: View {
 
 	private var bookHeaderSection: some View {
 		HStack(alignment: .center, spacing: 16) {
-			Image(meeting.book.thumbnailImageName ?? "book_cover_01") //수정필요
-				.resizable()
-				.scaledToFill()
+			BookCoverImage(book: meeting.book, placeholderImageName: "book_cover_01")
 				.frame(width: 110, height: 160) //수정필요
 				.clipped()
 				.shadow(color: .black.opacity(0.1), radius: 4, x: -4, y: 4)
@@ -118,8 +116,8 @@ struct BookMeetingDetailView: View {
 					.foregroundStyle(Color.gray500)
 					.padding(.bottom, 4)
 
-				if let genre = meeting.book.genre {
-					Text(genre)
+				if let kdcName = meeting.book.kdcName {
+					Text(kdcName)
 						.caption1SemiBoldStyle
 						.foregroundStyle(Color.white)
 						.padding(.horizontal, 10)
@@ -304,13 +302,11 @@ func bottomButton(_ title: String, action: @escaping () -> Void) -> some View {
 			meeting: BookMeeting(
 				id: "preview-detail",
 				book: Book(
-					id: "book-1",
+					id: 1,
 					title: "프로젝트 헤일메리",
 					author: "앤디 위어",
 					description: "중학교 과학 교사이자 전직 분자생물학자인 라이랜드 그레이스가 기억을 잃은 채 우주선에서 깨어나, 태양을 갉아 먹는 미생물 '아스트로파지'로 인해 멸종 위기에 처한 지구를 구하기 위해 외계인 과학자 '로키'와 함께 11.9광년 떨어진 타우 세티 행성계로 모험을 떠나는 이야기입니다",
-					thumbnailURL: nil,
-					thumbnailImageName: "book_cover_meeting_2",
-					genre: "#외국소설"
+					kdcName: "외국소설"
 				),
 				title: nil,
 				description: "",

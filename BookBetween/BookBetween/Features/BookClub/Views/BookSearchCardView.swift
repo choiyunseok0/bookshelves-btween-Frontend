@@ -8,9 +8,7 @@ struct BookSearchCardView: View {
 			Color.white
 
 			VStack(alignment: .leading, spacing: 0) {
-				Image(book.thumbnailImageName ?? "book_cover_01")
-					.resizable()
-					.scaledToFill()
+				BookCoverImage(book: book, placeholderImageName: "book_cover_01")
 					.frame(width: 90, height: 145) //수정필요
 					.clipped()
                     .padding(.top, 4)
@@ -40,28 +38,25 @@ struct BookSearchCardView: View {
 	ScrollView(.horizontal, showsIndicators: false) {
 		HStack(spacing: 16) {
 			BookSearchCardView(book: Book(
-				id: "preview-1",
+				id: 1,
 				title: "혼모노",
 				author: "성해나",
 				publisher: "창비",
-				thumbnailImageName: "book_cover_meeting_2",
-				genre: "#한국소설"
+				kdcName: "한국소설"
 			))
 			BookSearchCardView(book: Book(
-				id: "preview-2",
+				id: 2,
 				title: "빛은 얼마나 깊이 스미는가",
 				author: "김초엽",
 				publisher: "창비",
-				thumbnailImageName: "book_cover_meeting_1",
-				genre: "#SF소설"
+				kdcName: "SF소설"
 			))
 			BookSearchCardView(book: Book(
-				id: "preview-3",
+				id: 3,
 				title: "프로젝트 헤일메리",
 				author: "앤디 위어",
 				publisher: "알에이치코리아",
-				thumbnailImageName: "book_cover_meeting_2",
-				genre: "#SF소설"
+				kdcName: "SF소설"
 			))
 		}
 		.padding()

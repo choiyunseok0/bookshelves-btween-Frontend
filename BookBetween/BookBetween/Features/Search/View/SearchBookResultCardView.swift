@@ -8,11 +8,15 @@
 import SwiftUI
 
 struct SearchBookResultCardView: View {
-    let book: Book
+    let item: BookSearchItem
+
+    private var book: Book {
+        item.book
+    }
 
     var body: some View {
         NavigationLink {
-            BookRecordDetailView(book: book)
+            BookRecordDetailView(book: book, isSaveable: item.isSaveable)
         } label: {
             cardContent
         }
@@ -21,9 +25,7 @@ struct SearchBookResultCardView: View {
 
     private var cardContent: some View {
         HStack(alignment: .top, spacing: 10) {
-            Image(book.thumbnailImageName ?? "book_cover_meeting_2")
-                .resizable()
-                .scaledToFill()
+            BookCoverImage(book: book, placeholderImageName: "book_cover_meeting_2")
                 .frame(width: 65, height: 95)
                 .clipped()
                 .shadow(color: .black.opacity(0.12), radius: 2, x: -1, y: 1)
@@ -69,11 +71,14 @@ struct SearchBookResultCardView: View {
 
 #Preview {
     SearchBookResultCardView(
-        book: Book(
-            id: "search-preview",
-            title: "혼모노",
-            author: "성해나 (창비)",
-            thumbnailImageName: "book_cover_meeting_2"
+        item: BookSearchItem(
+            book: Book(
+                isbn: "9788936434595",
+                title: "혼모노",
+                author: "성해나",
+                publisher: "창비"
+            ),
+            isSaveable: true
         )
     )
     .padding()

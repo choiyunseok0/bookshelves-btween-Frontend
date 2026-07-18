@@ -14,9 +14,7 @@ struct MeetingCardView: View {
     var body: some View {
         VStack(spacing: 0) {
             HStack {
-                Image(meeting.book.thumbnailImageName ?? "book_cover_meeting_1")
-                    .resizable()
-                    .scaledToFill()
+                BookCoverImage(book: meeting.book, placeholderImageName: "book_cover_meeting_1")
                     .frame(width: 71, height: 108)
                     .shadow(color: .black.opacity(0.1), radius: 1.19453, x: -2.38905, y: 2.38905)
 
@@ -103,12 +101,10 @@ struct MeetingCardView: View {
         meeting: BookMeeting(
             id: "meeting-1",
             book: Book(
-                id: "meeting-book-1",
+                id: 1,
                 title: "빛은 얼마나 깊이 스미는가",
                 author: "",
-                description: nil,
-                thumbnailURL: nil,
-                thumbnailImageName: "book_cover_meeting_1"
+                description: nil
             ),
             title: nil,
             description: "",

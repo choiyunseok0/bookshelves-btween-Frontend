@@ -12,18 +12,19 @@ struct BookRecordDetailView: View {
     @State private var viewModel: BookRecordDetailViewModel
     @FocusState private var isReviewFocused: Bool  // 키보드 내리기
     
-    init(record: UserBookRecord) {
-        _viewModel = State(initialValue: BookRecordDetailViewModel(record: record))
+    init(record: UserBookRecord, isSaveable: Bool = true) {
+        _viewModel = State(initialValue: BookRecordDetailViewModel(record: record, isSaveable: isSaveable))
     }
 
-    init(book: Book) {
+    init(book: Book, isSaveable: Bool = true) {
         self.init(
             record: UserBookRecord(
                 book: book,
                 progress: 0,
-                oneLineReview: nil,
-                rating: nil
-            )
+                rating: nil,
+                memo: nil
+            ),
+            isSaveable: isSaveable
         )
     }
 
@@ -91,17 +92,15 @@ struct BookRecordDetailView: View {
                 }
             }
             .buttonStyle(.plain)
-            .disabled(viewModel.isEditing)
-            .opacity(viewModel.isEditing ? 0 : 1)
+            .disabled(viewModel.isEditing || !viewModel.isSaveable)
+            .opacity(viewModel.isEditing || !viewModel.isSaveable ? 0 : 1)
         }
     }
 
     // MARK: - 책 이미지, 제목
     private var bookHeader: some View {
         HStack(alignment: .center, spacing: 16) {
-            Image(viewModel.book.thumbnailImageName ?? "book_cover_meeting_1")
-                .resizable()
-                .scaledToFill()
+            BookCoverImage(book: viewModel.book, placeholderImageName: "book_cover_meeting_1")
                 .frame(width: 105.4, height: 160)
                 .clipShape(RoundedRectangle(cornerRadius: 9))
                 .shadow(color: .black.opacity(0.12), radius: 8, x: 0, y: 8)
@@ -116,8 +115,8 @@ struct BookRecordDetailView: View {
                     .body1RegularStyle
                     .foregroundStyle(.gray500)
 
-                if let genre = viewModel.book.genre {
-                    Text(genre)
+                if let kdcName = viewModel.book.kdcName {
+                    Text(kdcName)
                         .body2SemiBoldStyle
                         .foregroundStyle(.white)
                         .padding(.horizontal, 10)
@@ -232,14 +231,14 @@ struct BookRecordDetailView: View {
 
                 if viewModel.isEditing {
                     ZStack(alignment: .topLeading) {
-                        if viewModel.oneLineReview.isEmpty {
+                        if viewModel.memo.isEmpty {
                             Text("이 책에 대한 짧은 감상을 남겨주세요.")
                                 .caption1RegularStyle
                                 .foregroundStyle(.gray800)
                                 .allowsHitTesting(false)
                         }
 
-                        TextEditor(text: $viewModel.oneLineReview)
+                        TextEditor(text: $viewModel.memo)
                             .font(.caption1Regular)
                             .foregroundStyle(.gray800)
                             .frame(minHeight: 76)
@@ -308,17 +307,15 @@ struct BookRecordDetailView: View {
         BookRecordDetailView(
             record: UserBookRecord(
                 book: Book(
-                    id: "detail-preview",
+                    id: 1,
                     title: "랑과 나의 사막",
                     author: "천선란",
                     description: "성해나 작가의 단편 소설집 혼모노는 진짜와 가짜, 믿음에 대한 날카로운 질문을 던지는 작품입니다.\n표제작 혼모노는 신발을 잃고 20대 애기 무당에게 자리를 빼앗긴 베테랑 무당이 진정한 자신의 정체성을 찾아가는 과정을 그립니다.",
-                    thumbnailURL: nil,
-                    thumbnailImageName: "book_cover_recommend",
-                    genre: "#한국문학"
+                    kdcName: "한국문학"
                 ),
                 progress: 0,
-                oneLineReview: nil,
-                rating: nil
+                rating: nil,
+                memo: nil
             )
         )
     }

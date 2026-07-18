@@ -12,9 +12,7 @@ struct RecentBookCardView: View {
 
     var body: some View {
         HStack(spacing: 0){
-            Image(record.book.thumbnailImageName ?? "book_cover_recent")
-                .resizable()
-                .scaledToFit()
+            BookCoverImage(book: record.book, placeholderImageName: "book_cover_recent")
                 .frame(width: 72.8, height: 109.52)
                 .clipShape(RoundedRectangle(cornerRadius: 8))
             VStack(alignment: .leading){
@@ -81,17 +79,16 @@ struct RecentBookCardView: View {
 #Preview {
     RecentBookCardView(
         record: UserBookRecord(
+            id: 1,
             book: Book(
-                id: "recent-1",
+                id: 1,
                 title: "아무 희미한 빛으로도",
                 author: "최은영",
-                description: nil,
-                thumbnailURL: nil,
-                thumbnailImageName: "book_cover_recent"
+                description: nil
             ),
-            progress: 0.75,
-            oneLineReview: nil,
-            rating: 4.5
+            progress: 75,
+            rating: 4.5,
+            memo: nil
         )
     )
 }

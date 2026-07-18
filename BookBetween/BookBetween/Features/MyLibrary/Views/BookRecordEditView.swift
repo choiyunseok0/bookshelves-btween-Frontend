@@ -9,16 +9,16 @@ import SwiftUI
 struct BookRecordEditView: View {
 	let record: UserBookRecord
 
-	@State private var progress: Double
+	@State private var progress: Int
 	@State private var rating: Double
-	@State private var oneLineReview: String
+	@State private var memo: String
 	@Environment(\.dismiss) private var dismiss
 
 	init(record: UserBookRecord) {
 		self.record = record
 		self._progress = State(initialValue: record.progress)
 		self._rating = State(initialValue: record.rating ?? 0)
-		self._oneLineReview = State(initialValue: record.oneLineReview ?? "")
+		self._memo = State(initialValue: record.memo ?? "")
 	}
 
 	var body: some View {
@@ -49,9 +49,7 @@ struct BookRecordEditView: View {
 			leafDecoration
 
 			HStack(alignment: .top, spacing: 14) {
-				Image(record.book.thumbnailImageName ?? "book_cover_meeting_1")
-					.resizable()
-					.scaledToFill()
+				BookCoverImage(book: record.book, placeholderImageName: "book_cover_meeting_1")
 					.frame(width: 100, height: 130)
 					.clipped()
 					.shadow(color: .black.opacity(0.15), radius: 6, x: -3, y: 3)
@@ -64,8 +62,8 @@ struct BookRecordEditView: View {
 						.caption1RegularStyle
 						.foregroundStyle(Color.gray500)
 
-					if let genre = record.book.genre {
-						Text(genre)
+					if let kdcName = record.book.kdcName {
+						Text(kdcName)
 							.caption1SemiBoldStyle
 							.foregroundStyle(Color.green800)
 							.padding(.horizontal, 8)
@@ -107,10 +105,17 @@ struct BookRecordEditView: View {
 				.body1SemiBoldStyle
 
 			HStack(spacing: 10) {
-				Slider(value: $progress, in: 0...1)
+				Slider(
+					value: Binding(
+						get: { Double(progress) },
+						set: { progress = Int($0.rounded()) }
+					),
+					in: 0...100,
+					step: 1
+				)
 					.tint(Color.green800)
 
-				Text("\(Int(progress * 100))%")
+				Text("\(progress)%")
 					.body2RegularStyle
 					.foregroundStyle(Color.gray700)
 					.frame(width: 44, alignment: .trailing)
@@ -167,7 +172,7 @@ struct BookRecordEditView: View {
 					.body1SemiBoldStyle
 
 				ZStack(alignment: .topLeading) {
-					if oneLineReview.isEmpty {
+					if memo.isEmpty {
 						Text("이 책에 대한 짧은 감상을 남겨주세요.")
 							.font(.body2Regular)
 							.foregroundStyle(Color.gray400)
@@ -175,7 +180,7 @@ struct BookRecordEditView: View {
 							.padding(.leading, 4)
 							.allowsHitTesting(false)
 					}
-					TextEditor(text: $oneLineReview)
+					TextEditor(text: $memo)
 						.font(.body2Regular)
 						.frame(minHeight: 60)
 						.scrollContentBackground(Visibility.hidden)
@@ -204,17 +209,15 @@ struct BookRecordEditView: View {
 		BookRecordEditView(
 			record: UserBookRecord(
 				book: Book(
-					id: "lib-2",
+					id: 2,
 					title: "혼모노",
 					author: "성해나",
 					description: "성해나 작가의 단편 소설집 혼모노는 진짜와 가짜, 믿음에 대한 날카로운 질문을 던지는 작품입니다.",
-					thumbnailURL: nil,
-					thumbnailImageName: "book_cover_meeting_2",
-					genre: "#한국소설"
+					kdcName: "한국소설"
 				),
-				progress: 1.0,
-				oneLineReview: nil,
-				rating: nil
+				progress: 100,
+				rating: nil,
+				memo: nil
 			)
 		)
 	}

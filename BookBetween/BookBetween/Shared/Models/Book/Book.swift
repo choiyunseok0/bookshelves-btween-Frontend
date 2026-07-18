@@ -8,32 +8,38 @@
 import Foundation
 
 struct Book {
-	let id: String
-	let title: String
-	let author: String
-	let publisher: String?
-	let description: String?
-	let thumbnailURL: String? //책 표지 이미지 주소
-	let thumbnailImageName: String? // MockUpdata 용으로 추가. (임시)
-	let genre: String?
+    let id: Int?
+    let isbn: String?
+    let title: String
+    let author: String
+    let publisher: String?
+    let publishedDate: String?
+    let description: String?
+    let coverImageUrl: String?
+    let kdcCode: String?
+    let kdcName: String?
 
-	init(
-		id: String,
-		title: String,
-		author: String,
-		publisher: String? = nil,
-		description: String? = nil,
-		thumbnailURL: String? = nil,
-		thumbnailImageName: String? = nil,
-		genre: String? = nil
-	) {
-		self.id = id
-		self.title = title
-		self.author = author
-		self.publisher = publisher
-		self.description = description
-		self.thumbnailURL = thumbnailURL
-		self.thumbnailImageName = thumbnailImageName
-		self.genre = genre
-	}
+    init(
+        id: Int? = nil,
+        isbn: String? = nil,
+        title: String,
+        author: String,
+        publisher: String? = nil,
+        publishedDate: String? = nil,
+        description: String? = nil,
+        coverImageUrl: String? = nil,
+        kdcCode: String? = nil,
+        kdcName: String? = nil
+    ) {
+        self.id = id
+        self.isbn = isbn
+        self.title = title
+        self.author = author
+        self.publisher = publisher
+        self.publishedDate = publishedDate
+        self.description = description
+        self.coverImageUrl = coverImageUrl
+        self.kdcCode = kdcCode
+        self.kdcName = kdcName
+    }
 }

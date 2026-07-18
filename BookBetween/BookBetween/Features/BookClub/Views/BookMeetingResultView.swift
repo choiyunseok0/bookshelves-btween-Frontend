@@ -98,9 +98,7 @@ struct BookMeetingResultView: View {
 
 	private var bookHeaderSection: some View {
         HStack(alignment: .center, spacing: 16.4) {
-			Image(meeting.book.thumbnailImageName ?? "book_cover_01") //수정필요
-				.resizable()
-				.scaledToFill()
+			BookCoverImage(book: meeting.book, placeholderImageName: "book_cover_01")
 				.frame(width: 110, height: 170)
 				.clipped()
 				.shadow2()
@@ -308,10 +306,9 @@ struct BookMeetingResultView: View {
 			meeting: BookMeeting(
 				id: "preview-result",
 				book: Book(
-					id: "book-1",
+					id: 1,
 					title: "빛은 얼마나 깊이 스미는가",
-					author: "사브리나 임볼리",
-					thumbnailImageName: "book_cover_02"
+					author: "사브리나 임볼리"
 				),
 				title: nil,
 				description: "",

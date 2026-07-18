@@ -52,9 +52,7 @@ struct BookMeetingCardView: View {
     // MARK: - bookCover
     
 	private var bookCover: some View {
-        Image(meeting.book.thumbnailImageName ?? "book_cover_02") //이미지 변경 필요
-			.resizable()
-			.scaledToFill()
+		BookCoverImage(book: meeting.book, placeholderImageName: "book_cover_02")
 			.frame(width: 60, height: 86)
 			.clipped()
 			.shadow3()
@@ -185,12 +183,10 @@ struct BookMeetingCardView: View {
                 meeting: BookMeeting(
                     id: "preview-2",
                     book: Book(
-                        id: "book-2",
+                        id: 2,
                         title: "프로젝트 헤일메리",
                         author: "앤디 위어",
-                        description: nil,
-                        thumbnailURL: nil,
-                        thumbnailImageName: "book_cover_meeting_2"
+                        description: nil
                     ),
                     title: nil,
                     description: "",
@@ -209,12 +205,10 @@ struct BookMeetingCardView: View {
 				meeting: BookMeeting(
 					id: "preview-1",
 					book: Book(
-						id: "book-1",
+						id: 1,
 						title: "빛은 얼마나 깊이 스미는가",
 						author: "김초엽",
-						description: nil,
-						thumbnailURL: nil,
-						thumbnailImageName: "book_cover_02"
+						description: nil
 					),
 					title: nil,
 					description: "",

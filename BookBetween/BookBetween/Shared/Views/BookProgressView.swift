@@ -12,24 +12,28 @@
 import SwiftUI
 
 struct BookProgressView: View {
-    @Binding var progress: Double   // 0.0 ~ 1.0
+    @Binding var progress: Int
     var isEditable: Bool = false
 
     private let barHeight: CGFloat = 3
     private let knobSize: CGFloat = 12
 
-    init(progress: Double) {
+    init(progress: Int) {
         self._progress = .constant(progress)
         self.isEditable = false
     }
 
-    init(progress: Binding<Double>, isEditable: Bool = true) {
+    init(progress: Binding<Int>, isEditable: Bool = true) {
         self._progress = progress
         self.isEditable = isEditable
     }
 
-    private var clampedProgress: Double {
-        return min(max(progress, 0), 1)
+    private var clampedProgress: Int {
+        min(max(progress, 0), 100)
+    }
+
+    private var progressRatio: CGFloat {
+        CGFloat(clampedProgress) / 100
     }
 
     private var knobImageName: String {
@@ -42,14 +46,14 @@ struct BookProgressView: View {
     private func updateProgress(dragX: CGFloat, fullWidth: CGFloat) {
         guard fullWidth > knobSize else { return }
         let ratio = (dragX - knobSize / 2) / (fullWidth - knobSize)
-        progress = min(max(Double(ratio), 0), 1)
+        progress = Int((min(max(ratio, 0), 1) * 100).rounded())
     }
 
     var body: some View {
         HStack(spacing: 8) {
             GeometryReader { geo in
                 let fullWidth = geo.size.width
-                let knobX = knobSize / 2 + (fullWidth - knobSize) * clampedProgress
+                let knobX = knobSize / 2 + (fullWidth - knobSize) * progressRatio
 
                 ZStack(alignment: .leading) {
                     // 배경 트랙
@@ -91,7 +95,7 @@ struct BookProgressView: View {
             }
             .frame(height: knobSize)
 
-            Text("\(Int(clampedProgress * 100))%")
+            Text("\(clampedProgress)%")
                 .caption2SemiBoldStyle
                 .foregroundStyle(.green800)
         }
@@ -100,9 +104,9 @@ struct BookProgressView: View {
 
 #Preview {
     VStack(spacing: 20) {
-        BookProgressView(progress: 0.0)
-        BookProgressView(progress: 0.4)
-        BookProgressView(progress: 1.0)
+        BookProgressView(progress: 0)
+        BookProgressView(progress: 40)
+        BookProgressView(progress: 100)
     }
     .padding()
 }

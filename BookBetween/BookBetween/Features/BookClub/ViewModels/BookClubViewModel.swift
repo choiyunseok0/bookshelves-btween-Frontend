@@ -39,9 +39,9 @@ final class BookClubViewModel {
 	var createdMeetings: [BookMeeting] = []
 
 	var allBooks: [Book] = [
-		Book(id: "all-b-1", title: "혼모노", author: "성해나", publisher: "창비", thumbnailImageName: "book_cover_meeting_2", genre: "#한국소설"),
-		Book(id: "all-b-2", title: "빛은 얼마나 깊이 스미는가", author: "김초엽", publisher: "창비", thumbnailImageName: "book_cover_meeting_1", genre: "#SF소설"),
-		Book(id: "all-b-3", title: "프로젝트 헤일메리", author: "앤디 위어", publisher: "알에이치코리아", thumbnailImageName: "book_cover_meeting_2", genre: "#SF소설"),
+		Book(id: 101, title: "혼모노", author: "성해나", publisher: "창비", kdcName: "한국소설"),
+		Book(id: 102, title: "빛은 얼마나 깊이 스미는가", author: "김초엽", publisher: "창비", kdcName: "SF소설"),
+		Book(id: 103, title: "프로젝트 헤일메리", author: "앤디 위어", publisher: "알에이치코리아", kdcName: "SF소설"),
 	]
 
 	var recruitingMeetings: [BookMeeting] = []
@@ -70,7 +70,7 @@ final class BookClubViewModel {
 		self.recruitingMeetings = [
 			BookMeeting(
 				id: "recruiting-1",
-				book: Book(id: "book-rec-1", title: "혼모노", author: "성해나", description: "성해나 작가의 단편 소설집 『혼모노』는 진짜와 가짜, 믿음에 대한 날카로운 질문을 던지는 작품입니다.", thumbnailURL: nil, thumbnailImageName: "book_cover_meeting_2", genre: "#한국소설"),
+				book: Book(id: 201, title: "혼모노", author: "성해나", description: "성해나 작가의 단편 소설집 『혼모노』는 진짜와 가짜, 믿음에 대한 날카로운 질문을 던지는 작품입니다.", kdcName: "한국소설"),
 				title: nil, description: "",
 				recruitmentStartDate: date3, recruitmentEndDate: date3,
 				readingStartDate: date3, readingEndDate: date3,
@@ -80,7 +80,7 @@ final class BookClubViewModel {
 			),
 			BookMeeting(
 				id: "recruiting-2",
-				book: Book(id: "book-rec-2", title: "빛은 얼마나 깊이 스미는가", author: "김초엽", description: "우주의 끝에서 혼자 깨어난 과학자가 인류를 구하기 위해 사투를 벌이는 이야기.", thumbnailURL: nil, thumbnailImageName: "book_cover_meeting_1", genre: "#SF소설"),
+				book: Book(id: 202, title: "빛은 얼마나 깊이 스미는가", author: "김초엽", description: "우주의 끝에서 혼자 깨어난 과학자가 인류를 구하기 위해 사투를 벌이는 이야기.", kdcName: "SF소설"),
 				title: nil, description: "",
 				recruitmentStartDate: date4, recruitmentEndDate: date4,
 				readingStartDate: date4, readingEndDate: date4,
@@ -90,7 +90,7 @@ final class BookClubViewModel {
 			),
 			BookMeeting(
 				id: "recruiting-3",
-				book: Book(id: "book-rec-3", title: "혼모노", author: "성해나", description: nil, thumbnailURL: nil, thumbnailImageName: "book_cover_meeting_2", genre: "#한국소설"),
+				book: Book(id: 203, title: "혼모노", author: "성해나", description: nil, kdcName: "한국소설"),
 				title: nil, description: "",
 				recruitmentStartDate: date3, recruitmentEndDate: date3,
 				readingStartDate: date3, readingEndDate: date3,
@@ -104,12 +104,10 @@ final class BookClubViewModel {
 			BookMeeting(
 				id: "meeting-p-1",
 				book: Book(
-					id: "book-p-1",
+					id: 301,
 					title: "빛은 얼마나 깊이 스미는가",
 					author: "김초엽",
-					description: "우주의 끝에서 혼자 깨어난 과학자가 인류를 구하기 위해 사투를 벌이는 이야기. 인간과 외계 생명체의 우정을 따뜻하게 그려낸 SF 소설.",
-					thumbnailURL: nil,
-					thumbnailImageName: "book_cover_meeting_1"
+					description: "우주의 끝에서 혼자 깨어난 과학자가 인류를 구하기 위해 사투를 벌이는 이야기. 인간과 외계 생명체의 우정을 따뜻하게 그려낸 SF 소설."
 				),
 				title: nil,
 				description: "",
@@ -126,12 +124,10 @@ final class BookClubViewModel {
 			BookMeeting(
 				id: "meeting-p-2",
 				book: Book(
-					id: "book-p-2",
+					id: 302,
 					title: "혼모노",
 					author: "성해나",
-					description: nil,
-					thumbnailURL: nil,
-					thumbnailImageName: "book_cover_meeting_2"
+					description: nil
 				),
 				title: nil,
 				description: "",
@@ -148,12 +144,10 @@ final class BookClubViewModel {
 			BookMeeting(
 				id: "meeting-p-3",
 				book: Book(
-					id: "book-p-3",
+					id: 303,
 					title: "혼모노",
 					author: "성해나",
-					description: nil,
-					thumbnailURL: nil,
-					thumbnailImageName: "book_cover_meeting_2"
+					description: nil
 				),
 				title: nil,
 				description: "",
@@ -173,12 +167,10 @@ final class BookClubViewModel {
 			BookMeeting(
 				id: "meeting-c-1",
 				book: Book(
-					id: "book-c-1",
+					id: 401,
 					title: "빛은 얼마나 깊이 스미는가",
 					author: "김초엽",
-					description: nil,
-					thumbnailURL: nil,
-					thumbnailImageName: "book_cover_meeting_1"
+					description: nil
 				),
 				title: nil,
 				description: "",
@@ -195,12 +187,10 @@ final class BookClubViewModel {
 			BookMeeting(
 				id: "meeting-c-2",
 				book: Book(
-					id: "book-c-2",
+					id: 402,
 					title: "혼모노",
 					author: "성해나",
-					description: nil,
-					thumbnailURL: nil,
-					thumbnailImageName: "book_cover_meeting_2"
+					description: nil
 				),
 				title: nil,
 				description: "",

@@ -108,8 +108,8 @@ struct SearchView: View {
     
     private var SearchResultSectionView: some View {
         VStack(spacing: 12) {
-            ForEach(viewModel.searchResults, id: \.id) { book in
-                SearchBookResultCardView(book: book)
+            ForEach(viewModel.searchResults, id: \.listID) { item in
+                SearchBookResultCardView(item: item)
             }
         }
     }

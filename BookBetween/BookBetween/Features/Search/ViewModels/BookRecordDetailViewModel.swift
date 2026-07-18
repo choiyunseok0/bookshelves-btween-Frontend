@@ -11,16 +11,18 @@ import Observation
 @Observable
 final class BookRecordDetailViewModel {
     private(set) var record: UserBookRecord
+    let isSaveable: Bool
     var isEditing: Bool = false
-    var progress: Double
+    var progress: Int
     var rating: Double
-    var oneLineReview: String
+    var memo: String
 
-    init(record: UserBookRecord) {
+    init(record: UserBookRecord, isSaveable: Bool = true) {
         self.record = record
+        self.isSaveable = isSaveable
         self.progress = record.progress
         self.rating = record.rating ?? 0
-        self.oneLineReview = record.oneLineReview ?? ""
+        self.memo = record.memo ?? ""
     }
 
     var book: Book {
@@ -28,14 +30,15 @@ final class BookRecordDetailViewModel {
     }
 
     var hasReview: Bool {
-        !oneLineReview.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        !memo.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     var reviewPlaceholderText: String {
-        hasReview ? oneLineReview : "이 책에 대한 짧은 감상을 남겨주세요."
+        hasReview ? memo : "이 책에 대한 짧은 감상을 남겨주세요."
     }
 
     func startEditing() {
+        guard isSaveable else { return }
         isEditing = true
     }
 
@@ -45,11 +48,11 @@ final class BookRecordDetailViewModel {
     }
 
     func saveRecord() {
-        let trimmedReview = oneLineReview.trimmingCharacters(in: .whitespacesAndNewlines)
+        let trimmedMemo = memo.trimmingCharacters(in: .whitespacesAndNewlines)
         record.progress = progress
         record.rating = rating > 0 ? rating : nil
-        record.oneLineReview = trimmedReview.isEmpty ? nil : trimmedReview
-        oneLineReview = record.oneLineReview ?? ""
+        record.memo = trimmedMemo.isEmpty ? nil : trimmedMemo
+        memo = record.memo ?? ""
         isEditing = false
     }
 }

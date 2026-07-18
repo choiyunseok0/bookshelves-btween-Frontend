@@ -8,8 +8,23 @@
 import Foundation
 
 struct UserBookRecord {
+    let id: Int?
     let book: Book
-    var progress: Double
-    var oneLineReview: String?
+    var progress: Int
     var rating: Double?
+    var memo: String?
+
+    init(
+        id: Int? = nil,
+        book: Book,
+        progress: Int,
+        rating: Double? = nil,
+        memo: String? = nil
+    ) {
+        self.id = id
+        self.book = book
+        self.progress = progress
+        self.rating = rating
+        self.memo = memo
+    }
 }

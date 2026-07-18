@@ -81,10 +81,11 @@ struct HomeView: View {
                     NavigationLink {
                         BookRecordDetailView(
                             record: UserBookRecord(
+                                id: 1,
                                 book: recommendation.book,
                                 progress: 0,
-                                oneLineReview: nil,
-                                rating: nil
+                                rating: nil,
+                                memo: nil
                             )
                         )
                     } label: {
@@ -105,9 +106,7 @@ struct HomeView: View {
                 .padding(.leading, 19)
                 Spacer()
                 
-                Image(recommendation.book.thumbnailImageName ?? "book_cover_recommend")
-                    .resizable()
-                    .scaledToFit()
+                BookCoverImage(book: recommendation.book, placeholderImageName: "book_cover_recommend")
                     .frame(width:86, height: 146)
                     .padding(.trailing, 26.5)
             }
@@ -123,7 +122,7 @@ struct HomeView: View {
                     .body1SemiBoldStyle
                 Spacer()
             }
-            ForEach(viewModel.home.recentBooks, id: \.book.id) { record in
+            ForEach(viewModel.home.recentBooks, id: \.id) { record in
                 NavigationLink {
                     BookRecordDetailView(record: record)
                 } label: {
