@@ -10,11 +10,17 @@ import SwiftUI
 // MARK: - 계정 설정 화면
 
 struct AccountSetupView: View {
+  let onStart: () -> Void
+
+  init(onStart: @escaping () -> Void = {}) {
+    self.onStart = onStart
+  }
+
   var body: some View {
     ZStack {
       AccountSetupBackgroundView()
 
-      AccountSetupContentView()
+      AccountSetupContentView(onStart: onStart)
     }
   }
 }
@@ -58,6 +64,8 @@ private struct AccountSetupLeafDecorationView: View {
 // MARK: - 콘텐츠 영역
 
 private struct AccountSetupContentView: View {
+  let onStart: () -> Void
+
   @State private var nickname = ""
   @State private var isAgreed = false
 
@@ -89,6 +97,7 @@ private struct AccountSetupContentView: View {
       AccountSetupStartButtonView(
         isEnabled: self.isStartButtonEnabled
       ) {
+        self.onStart()
       }
       .padding(.top, 12)
 

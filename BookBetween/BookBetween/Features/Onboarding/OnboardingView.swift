@@ -10,6 +10,12 @@ import SwiftUI
 struct OnboardingView: View {
   @StateObject private var viewModel = OnboardingViewModel()
 
+  let onComplete: () -> Void
+
+  init(onComplete: @escaping () -> Void = {}) {
+    self.onComplete = onComplete
+  }
+
   var body: some View {
     GeometryReader { geometry in
       ZStack {
@@ -37,7 +43,11 @@ struct OnboardingView: View {
           .padding(.bottom, 32.9)
 
           OnboardingBottomButton(title: self.viewModel.bottomButtonTitle) {
-            self.viewModel.nextButtonDidTap()
+            if self.viewModel.isLastPage {
+              self.onComplete()
+            } else {
+              self.viewModel.nextButtonDidTap()
+            }
           }
           .padding(.horizontal, 29)
         }

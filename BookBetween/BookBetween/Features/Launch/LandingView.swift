@@ -10,6 +10,12 @@ import SwiftUI
 // MARK: - 랜딩 화면
 
 struct LandingView: View {
+  let onStart: () -> Void
+
+  init(onStart: @escaping () -> Void = {}) {
+    self.onStart = onStart
+  }
+
   var body: some View {
     GeometryReader { geometry in
       ZStack {
@@ -31,6 +37,10 @@ struct LandingView: View {
       }
     }
     .ignoresSafeArea()
+    .contentShape(Rectangle())
+    .onTapGesture {
+      self.onStart()
+    }
   }
 }
 
