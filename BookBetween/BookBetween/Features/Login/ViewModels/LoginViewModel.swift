@@ -22,6 +22,7 @@ enum LoginViewState: Equatable {
 @MainActor
 @Observable
 final class LoginViewModel {
+    private let kakaoLoginService: KakaoLoginServiceProtocol
     private let authService: AuthServiceProtocol
 
     private(set) var state: LoginViewState = .idle
@@ -30,8 +31,30 @@ final class LoginViewModel {
         state == .loading
     }
 
-    init(authService: AuthServiceProtocol) {
+    init(
+        kakaoLoginService: KakaoLoginServiceProtocol,
+        authService: AuthServiceProtocol
+    ) {
+        self.kakaoLoginService = kakaoLoginService
         self.authService = authService
+    }
+
+    func loginWithKakao() async {
+        guard !isLoading else {
+            return
+        }
+
+        state = .loading
+
+        do {
+            let providerToken = try await kakaoLoginService.login()
+            state = try await requestSocialLogin(
+                provider: .kakao,
+                providerToken: providerToken
+            )
+        } catch {
+            state = .failure(error.localizedDescription)
+        }
     }
 
     func socialLogin(
@@ -45,11 +68,10 @@ final class LoginViewModel {
         state = .loading
 
         do {
-            let result = try await authService.socialLogin(
+            state = try await requestSocialLogin(
                 provider: provider,
                 providerToken: providerToken
             )
-            state = try Self.makeSuccessState(from: result)
         } catch {
             state = .failure(error.localizedDescription)
         }
@@ -57,6 +79,34 @@ final class LoginViewModel {
 
     func resetState() {
         state = .idle
+    }
+
+    func completeAccountSetup() {
+        guard state == .success(.accountSetup) else {
+            return
+        }
+
+        state = .success(.main)
+    }
+
+    var errorMessage: String? {
+        guard case .failure(let message) = state else {
+            return nil
+        }
+
+        return message
+    }
+
+    private func requestSocialLogin(
+        provider: SocialProvider,
+        providerToken: String
+    ) async throws -> LoginViewState {
+        let result = try await authService.socialLogin(
+            provider: provider,
+            providerToken: providerToken
+        )
+
+        return try Self.makeSuccessState(from: result)
     }
 
     private static func makeSuccessState(

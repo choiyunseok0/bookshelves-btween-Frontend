@@ -11,6 +11,8 @@ import KakaoSDKCommon
 
 @main
 struct BookBetweenApp: App {
+    private let loginViewModel: LoginViewModel
+
     init() {
         guard let kakaoNativeAppKey = Bundle.main.object(
             forInfoDictionaryKey: "KAKAO_NATIVE_APP_KEY"
@@ -20,11 +22,27 @@ struct BookBetweenApp: App {
         }
 
         KakaoSDK.initSDK(appKey: kakaoNativeAppKey)
+
+        guard let stubBaseURL = URL(
+            string: "https://stub.bookbetween.local"
+        ) else {
+            preconditionFailure("Stub Base URL을 생성하지 못했습니다.")
+        }
+
+        self.loginViewModel = LoginViewModel(
+            kakaoLoginService: KakaoLoginService(),
+            authService: AuthService(
+                baseURL: stubBaseURL,
+                provider: AuthStubProviderFactory.make(
+                    scenario: .pendingOnboarding
+                )
+            )
+        )
     }
 
     var body: some Scene {
         WindowGroup {
-            MainTabView()
+            AppRootView(loginViewModel: loginViewModel)
                 .onOpenURL { url in
                     if AuthApi.isKakaoTalkLoginUrl(url) {
                         _ = AuthController.handleOpenUrl(url: url)

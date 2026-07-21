@@ -8,11 +8,41 @@
 import SwiftUI
 
 struct LoginView: View {
+  @State private var viewModel: LoginViewModel
+
+  init(viewModel: LoginViewModel) {
+    _viewModel = State(initialValue: viewModel)
+  }
+
   var body: some View {
     ZStack {
       LoginBackgroundView()
 
-      LoginContentView()
+      LoginContentView(
+        isLoading: viewModel.isLoading,
+        onKakaoLogin: {
+          Task {
+            await viewModel.loginWithKakao()
+          }
+        }
+      )
+    }
+    .alert(
+      "로그인에 실패했습니다.",
+      isPresented: Binding(
+        get: { viewModel.errorMessage != nil },
+        set: { isPresented in
+          if !isPresented {
+            viewModel.resetState()
+          }
+        }
+      )
+    ) {
+      Button("확인") {
+        viewModel.resetState()
+      }
+    } message: {
+      Text(viewModel.errorMessage ?? "다시 시도해주세요.")
     }
   }
 }
@@ -53,6 +83,9 @@ private struct LoginBackgroundView: View {
 }
 
 private struct LoginContentView: View {
+  let isLoading: Bool
+  let onKakaoLogin: () -> Void
+
   var body: some View {
     VStack(spacing: 0) {
       Spacer()
@@ -63,7 +96,10 @@ private struct LoginContentView: View {
       LoginTitleSectionView()
         .padding(.bottom, 20)
 
-      LoginSocialButtonSectionView()
+      LoginSocialButtonSectionView(
+        isLoading: isLoading,
+        onKakaoLogin: onKakaoLogin
+      )
 
       Spacer()
     }
@@ -98,9 +134,15 @@ private struct LoginTitleSectionView: View {
 }
 
 private struct LoginSocialButtonSectionView: View {
+  let isLoading: Bool
+  let onKakaoLogin: () -> Void
+
   var body: some View {
     VStack(spacing: 12) {
-      KakaoLoginButton()
+      KakaoLoginButton(
+        isLoading: isLoading,
+        action: onKakaoLogin
+      )
 
       GoogleLoginButton()
     }
@@ -108,25 +150,33 @@ private struct LoginSocialButtonSectionView: View {
 }
 
 private struct KakaoLoginButton: View {
-  var body: some View {
-    Button {
-    } label: {
-      HStack(spacing: 8) {
-        Image("kakao")
-          .resizable()
-          .scaledToFit()
-          .frame(width: 17.99993, height: 16.8)
+  let isLoading: Bool
+  let action: () -> Void
 
-        Text("카카오 로그인")
-          // 폰트 추가 후 수정 필요
-          .body1SemiBoldStyle
-          .foregroundStyle(.black)
+  var body: some View {
+    Button(action: action) {
+      HStack(spacing: 8) {
+        if isLoading {
+          ProgressView()
+            .tint(.black)
+        } else {
+          Image("kakao")
+            .resizable()
+            .scaledToFit()
+            .frame(width: 17.99993, height: 16.8)
+
+          Text("카카오 로그인")
+            // 폰트 추가 후 수정 필요
+            .body1SemiBoldStyle
+            .foregroundStyle(.black)
+        }
       }
       .frame(maxWidth: .infinity)
       .frame(height: 45)
       .background(Color(red: 1.0, green: 0.9, blue: 0.0))
       .clipShape(RoundedRectangle(cornerRadius: 6))
     }
+    .disabled(isLoading)
   }
 }
 
@@ -158,5 +208,15 @@ private struct GoogleLoginButton: View {
 }
 
 #Preview {
-  LoginView()
+  LoginView(
+    viewModel: LoginViewModel(
+      kakaoLoginService: KakaoLoginService(),
+      authService: AuthService(
+        baseURL: URL(string: "https://stub.bookbetween.local")!,
+        provider: AuthStubProviderFactory.make(
+          scenario: .pendingOnboarding
+        )
+      )
+    )
+  )
 }
