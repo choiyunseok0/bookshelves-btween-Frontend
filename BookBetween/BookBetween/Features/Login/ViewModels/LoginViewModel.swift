@@ -146,6 +146,7 @@ final class LoginViewModel {
             throw LoginViewModelError.missingServiceTokens
         }
     }
+
 }
 
 private enum LoginViewModelError: LocalizedError {
