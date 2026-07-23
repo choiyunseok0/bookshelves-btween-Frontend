@@ -229,7 +229,7 @@ private struct AccountSetupGenreSectionView: View {
         ForEach(self.genreRows, id: \.self) { row in
           HStack(spacing: 8) {
             ForEach(row, id: \.self) { genre in
-              AccountSetupGenreChipView(
+              GenreChipView(
                 title: genre,
                 isSelected: self.selectedGenres.contains(genre)
               ) {
@@ -252,36 +252,6 @@ private struct AccountSetupGenreSectionView: View {
     } else {
       self.selectedGenres.insert(genre)
     }
-  }
-}
-
-// MARK: - 장르 칩
-
-private struct AccountSetupGenreChipView: View {
-  let title: String
-  let isSelected: Bool
-  let action: () -> Void
-
-  private var isTwoLetterGenre: Bool {
-    self.title.count == 2
-  }
-
-  var body: some View {
-    Button(action: self.action) {
-      Text(self.title)
-        .body1SemiBoldStyle
-        .foregroundStyle(self.isSelected ? Color.white : Color.gray500)
-        .frame(width: self.isTwoLetterGenre ? 60 : nil)
-        .padding(.horizontal, self.isTwoLetterGenre ? 0 : 10)
-        .frame(height: 30)
-        .background(self.isSelected ? Color.green600 : Color.white)
-        .cornerRadius(15)
-        .overlay {
-          RoundedRectangle(cornerRadius: 15)
-            .stroke(self.isSelected ? Color.green600 : Color.gray300, lineWidth: 1)
-        }
-    }
-    .buttonStyle(.plain)
   }
 }
 
