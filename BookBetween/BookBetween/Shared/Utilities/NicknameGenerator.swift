@@ -7,6 +7,16 @@ import Foundation
 
 // MARK: - 랜덤 닉네임 생성기
 
+struct GeneratedNickname {
+    let text: String
+    let animalImageName: String
+
+    static let placeholder = GeneratedNickname(
+        text: "책 먹는 여우",
+        animalImageName: "ex_animal"
+    )
+}
+
 enum NicknameGenerator {
     // MARK: - 랜덤 닉네임 단어 목록
 
@@ -24,34 +34,64 @@ enum NicknameGenerator {
         "지키는", "넘기는", "쌓는", "적는", "옮기는", "나르는"
     ]
 
-    private static let animals = [
-        "여우", "악어", "호랑이", "코끼리", "두더지", "고슴도치", "기린",
-        "고양이", "부엉이", "강아지", "올빼미", "참새", "독수리", "뻐꾸기",
-        "여행자", "수달", "표범", "거북이", "치타", "원숭이", "곰", "사슴",
-        "해파리", "범고래", "뱀", "햄스터", "금붕어"
+    private static let animals: [NicknameAnimal] = [
+        NicknameAnimal(name: "곰", imageName: "animal_bear"),
+        NicknameAnimal(name: "다람쥐", imageName: "animal_squirrel"),
+        NicknameAnimal(name: "고슴도치", imageName: "animal_hedgehog"),
+        NicknameAnimal(name: "나무늘보", imageName: "animal_sloth"),
+        NicknameAnimal(name: "올빼미", imageName: "animal_owl"),
+        NicknameAnimal(name: "너구리", imageName: "animal_raccoon"),
+        NicknameAnimal(name: "북극곰", imageName: "animal_polar_bear"),
+        NicknameAnimal(name: "판다", imageName: "animal_panda"),
+        NicknameAnimal(name: "코알라", imageName: "animal_koala"),
+        NicknameAnimal(name: "코끼리", imageName: "animal_elephant"),
+        NicknameAnimal(name: "고래", imageName: "animal_whale"),
+        NicknameAnimal(name: "상어", imageName: "animal_shark"),
+        NicknameAnimal(name: "펭귄", imageName: "animal_penguin"),
+        NicknameAnimal(name: "악어", imageName: "animal_crocodile"),
+        NicknameAnimal(name: "개구리", imageName: "animal_frog"),
+        NicknameAnimal(name: "거북이", imageName: "animal_turtle"),
+        NicknameAnimal(name: "토끼", imageName: "animal_rabbit"),
+        NicknameAnimal(name: "수달", imageName: "animal_otter"),
+        NicknameAnimal(name: "비버", imageName: "animal_beaver"),
+        NicknameAnimal(name: "얼룩말", imageName: "animal_zebra"),
+        NicknameAnimal(name: "사자", imageName: "animal_lion"),
+        NicknameAnimal(name: "호랑이", imageName: "animal_tiger"),
+        NicknameAnimal(name: "치타", imageName: "animal_cheetah"),
+        NicknameAnimal(name: "기린", imageName: "animal_giraffe")
     ]
 
     // MARK: - 랜덤 닉네임 생성
 
-    static func generate(excluding currentNickname: String? = nil) -> String {
+    static func generate(excluding currentNickname: String? = nil) -> GeneratedNickname {
         var nickname = makeNickname()
 
-        while nickname == currentNickname {
+        while nickname.text == currentNickname {
             nickname = makeNickname()
         }
 
         return nickname
     }
 
-    private static func makeNickname() -> String {
+    private static func makeNickname() -> GeneratedNickname {
         guard
             let subject = subjects.randomElement(),
             let adjective = adjectives.randomElement(),
             let animal = animals.randomElement()
         else {
-            return "책 먹는 여우"
+            return .placeholder
         }
 
-        return "\(subject) \(adjective) \(animal)"
+        return GeneratedNickname(
+            text: "\(subject) \(adjective) \(animal.name)",
+            animalImageName: animal.imageName
+        )
     }
+}
+
+// MARK: - 닉네임 동물 정보
+
+private struct NicknameAnimal {
+    let name: String
+    let imageName: String
 }
