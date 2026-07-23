@@ -44,7 +44,7 @@ private struct AccountSetupLeafDecorationView: View {
   var body: some View {
     GeometryReader { _ in
       ZStack {
-        Image("accountSetupLeaf")
+        Image("accountSetupleaf")
           .resizable()
           .scaledToFit()
           .frame(width: 123.45, height: 138.25)

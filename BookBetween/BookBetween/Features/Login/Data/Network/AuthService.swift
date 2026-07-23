@@ -43,7 +43,20 @@ final class AuthService: AuthServiceProtocol {
                     endpoint: .socialLogin(request)
                 )
             )
-            return try response.decodePayload(SocialLoginResultDTO.self)
+            let result = try response.decodePayload(
+                SocialLoginResultDTO.self
+            )
+
+            #if DEBUG
+            print("""
+            [SocialLogin]
+            URL: \(response.request?.url?.absoluteString ?? "확인 불가")
+            HTTP: \(response.statusCode)
+            memberStatus: \(result.memberStatus.rawValue)
+            """)
+            #endif
+
+            return result
         } catch let error as MoyaError {
             throw NetworkError.transport(error)
         }
