@@ -7,15 +7,22 @@
 import SwiftUI
 
 struct ProfileView: View {
-    private let weekdays = ["일", "월", "화", "수", "목", "금", "토"]
-    private let calendarDays: [(day: Int, isCurrentMonth: Bool)] = [
-        (31, false), (1, true), (2, true), (3, true), (4, true), (5, true), (6, true),
-        (7, true), (8, true), (9, true), (10, true), (11, true), (12, true), (13, true),
-        (14, true), (15, true), (16, true), (17, true), (18, true), (19, true), (20, true),
-        (21, true), (22, true), (23, true), (24, true), (25, true), (26, true), (27, true),
-        (28, true), (29, true), (30, true), (1, false), (2, false), (3, false), (4, false)
-    ]
+    // MARK: - 속성
 
+    @State private var viewModel = ProfileViewModel()
+
+    private let weekdays = ["일", "월", "화", "수", "목", "금", "토"]
+
+    private var displayedMonthTitle: String {
+        viewModel.displayedMonth.formatted(
+            .dateTime
+                .locale(Locale(identifier: "ko_KR"))
+                .year()
+                .month(.wide)
+        )
+    }
+
+    // MARK: - 화면 구성
     var body: some View {
         ScrollView(showsIndicators: false) {
             VStack(alignment: .leading, spacing: 0) {
@@ -231,11 +238,7 @@ struct ProfileView: View {
 
             Spacer()
 
-            Text("2026년")
-                .head2Style
-                .foregroundStyle(Color.gray800)
-            
-            Text("8월")
+            Text(displayedMonthTitle)
                 .head2Style
                 .foregroundStyle(Color.gray800)
 
@@ -269,7 +272,7 @@ struct ProfileView: View {
         let columns = Array(repeating: GridItem(.flexible(), spacing: 0), count: 7)
 
         return LazyVGrid(columns: columns, spacing: 0) {
-            ForEach(Array(calendarDays.enumerated()), id: \.offset) { _, calendarDay in
+            ForEach(viewModel.calendarDays) { calendarDay in
                 Text("\(calendarDay.day)")
                     .body2SemiBoldStyle
                     .foregroundStyle(
