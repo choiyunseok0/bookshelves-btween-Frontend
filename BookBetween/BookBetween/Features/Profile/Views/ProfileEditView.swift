@@ -11,6 +11,7 @@ struct ProfileEditView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var generatedNickname = GeneratedNickname.placeholder
     @State private var selectedProfileBackground: ProfileBackgroundColor = .brown
+    @State private var selectedGenres: Set<String> = ["사회과학", "문학"]
 
     var body: some View {
         ZStack {
@@ -35,6 +36,10 @@ struct ProfileEditView: View {
                     ProfileAppearanceSectionView(
                         animalImageName: generatedNickname.animalImageName,
                         selectedBackground: $selectedProfileBackground
+                    )
+
+                    ProfileGenreSectionView(
+                        selectedGenres: $selectedGenres
                     )
                 }
                 .padding(.bottom, 40)
@@ -297,6 +302,59 @@ private enum ProfileBackgroundColor: CaseIterable, Identifiable {
             startPoint: UnitPoint(x: -0.17, y: 0.17),
             endPoint: UnitPoint(x: 1.17, y: 0.83)
         )
+    }
+}
+
+
+// MARK: - 선호 장르 변경 영역
+
+private struct ProfileGenreSectionView: View {
+    @Binding var selectedGenres: Set<String>
+
+    private let genreRows: [[String]] = [
+        ["총류", "철학", "종교", "사회과학"],
+        ["자연과학", "기술과학", "예술"],
+        ["언어", "문학", "역사"]
+    ]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("좋아하는 장르 변경")
+                .body1SemiBoldStyle
+                .foregroundStyle(Color.gray800)
+
+            Text("선택한 장르는 추천 도서와 모임에 반영돼요")
+                .caption1RegularStyle
+                .foregroundStyle(Color.gray600)
+                .padding(.top, 4)
+
+            VStack(alignment: .leading, spacing: 4) {
+                ForEach(genreRows, id: \.self) { row in
+                    HStack(spacing: 8) {
+                        ForEach(row, id: \.self) { genre in
+                            GenreChipView(
+                                title: genre,
+                                isSelected: selectedGenres.contains(genre)
+                            ) {
+                                toggleGenre(genre)
+                            }
+                        }
+                    }
+                }
+            }
+            .padding(.top, 16)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 30)
+        .padding(.bottom, 48)
+    }
+
+    private func toggleGenre(_ genre: String) {
+        if selectedGenres.contains(genre) {
+            selectedGenres.remove(genre)
+        } else {
+            selectedGenres.insert(genre)
+        }
     }
 }
 
