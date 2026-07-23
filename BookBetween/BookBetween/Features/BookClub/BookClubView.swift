@@ -85,7 +85,7 @@ struct BookClubView: View {
 	@ViewBuilder
 	private func meetingList(_ meetings: [BookMeeting]) -> some View {
 		ForEach(meetings, id: \.id) { meeting in
-			BookMeetingCardView(meeting: meeting)
+			BookMeetingCardView(meeting: meeting, service: viewModel.meetingService)
 		}
 	}
 
@@ -190,7 +190,7 @@ struct BookClubView: View {
                 ZStack(alignment: .top) {
                     VStack(spacing: 12) {
                         ForEach(meetingPages[currentMeetingPage], id: \.id) { meeting in
-                            BookMeetingCardView(meeting: meeting)
+                            BookMeetingCardView(meeting: meeting, service: viewModel.meetingService)
                         }
                     }
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)

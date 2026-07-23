@@ -42,6 +42,7 @@ final class BookClubViewModel {
 	// MARK: - Properties
 
 	var selectedTab: BookClubTab = .myMeetings
+	var meetingService: (any MeetingServiceProtocol)?
 	var searchText: String = ""
 	var participatingMeetings: [BookMeeting] = []
 	var createdMeetings: [BookMeeting] = []

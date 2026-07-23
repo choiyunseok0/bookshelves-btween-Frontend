@@ -2,6 +2,12 @@ import SwiftUI
 
 struct BookMeetingCardView: View {
 	let meeting: BookMeeting
+    let service: (any MeetingServiceProtocol)?
+
+    init(meeting: BookMeeting, service: (any MeetingServiceProtocol)? = nil) {
+        self.meeting = meeting
+        self.service = service
+    }
 
 	var body: some View {
 		ZStack {
@@ -163,9 +169,9 @@ struct BookMeetingCardView: View {
     @ViewBuilder
     private var destination: some View {
         if meeting.status == .completed {
-            BookMeetingResultView(meeting: meeting)
+            BookMeetingResultView(meeting: meeting, service: service)
         } else {
-            BookMeetingDetailView(meeting: meeting)
+            BookMeetingDetailView(meeting: meeting, service: service)
         }
     }
 

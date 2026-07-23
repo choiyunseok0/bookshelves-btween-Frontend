@@ -2,7 +2,14 @@ import SwiftUI
 
 struct BookMeetingResultView: View {
 	@Environment(\.dismiss) private var dismiss
-	let meeting: BookMeeting
+
+    private let service: (any MeetingServiceProtocol)?
+    @State private var meeting: BookMeeting
+
+    init(meeting: BookMeeting, service: (any MeetingServiceProtocol)? = nil) {
+        self._meeting = State(initialValue: meeting)
+        self.service = service
+    }
 
 	private var discussion: BookMeetingDiscussion {
 		BookMeetingDiscussion(
@@ -54,6 +61,12 @@ struct BookMeetingResultView: View {
 			}
 		}
 		.toolbar(.hidden, for: .navigationBar)
+		.task {
+			guard let service else { return }
+			if let fetched = try? await service.fetchMeetingDetail(meetingId: meeting.id) {
+				meeting = fetched
+			}
+		}
 	}
 
     // MARK: - Background
