@@ -41,6 +41,18 @@ struct ProfileEditView: View {
                     ProfileGenreSectionView(
                         selectedGenres: $selectedGenres
                     )
+
+                    ProfileAccountActionSectionView(
+                        onSave: {
+                            // 프로필 저장 기능 연결 시 동작 추가
+                        },
+                        onLogout: {
+                            // 로그아웃 기능 연결 시 동작 추가
+                        },
+                        onWithdraw: {
+                            // 회원 탈퇴 기능 연결 시 동작 추가
+                        }
+                    )
                 }
                 .padding(.bottom, 40)
             }
@@ -355,6 +367,62 @@ private struct ProfileGenreSectionView: View {
         } else {
             selectedGenres.insert(genre)
         }
+    }
+}
+
+// MARK: - 계정 관리 영역
+
+private struct ProfileAccountActionSectionView: View {
+    let onSave: () -> Void
+    let onLogout: () -> Void
+    let onWithdraw: () -> Void
+
+    var body: some View {
+        VStack(spacing: 0) {
+            Button(action: onSave) {
+                Text("저장하기")
+                    .body1SemiBoldStyle
+                    .foregroundStyle(Color.beige100)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 53)
+                    .background(Color.green600)
+                    .clipShape(RoundedRectangle(cornerRadius: 12))
+            }
+
+            Button(action: onLogout) {
+                HStack(spacing: 8) {
+                    Image(systemName: "rectangle.portrait.and.arrow.right")
+                        .font(.system(size: 18, weight: .regular))
+
+                    Text("로그아웃")
+                        .body1SemiBoldStyle
+                }
+                .foregroundStyle(Color.gray800)
+                .frame(maxWidth: .infinity)
+                .frame(height: 53)
+                .background(Color.white)
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .overlay {
+                    RoundedRectangle(cornerRadius: 12)
+                        .inset(by: 0.5)
+                        .stroke(Color.gray200, lineWidth: 1)
+                }
+            }
+            .padding(.top, 12)
+            
+            Divider()
+                .overlay(Color.gray200)
+                .padding(.top, 16)
+
+            Button(action: onWithdraw) {
+                Text("회원 탈퇴")
+                    .caption1RegularStyle
+                    .foregroundStyle(Color.gray500)
+                    .frame(maxWidth: .infinity)
+                    .padding(.top, 8)
+            }
+        }
+        .padding(.horizontal, 29)
     }
 }
 
