@@ -73,7 +73,8 @@ final class ProfileViewModel {
         let firstWeekday = calendar.component(.weekday, from: monthStart)
         let leadingDayCount = (firstWeekday - calendar.firstWeekday + 7) % 7
         let requiredDayCount = leadingDayCount + daysInMonth
-        let cellCount = ((requiredDayCount + 6) / 7) * 7
+        let calculatedCellCount = ((requiredDayCount + 6) / 7) * 7
+        let cellCount = max(35, calculatedCellCount)
 
         guard let calendarStartDate = calendar.date(
             byAdding: .day,
