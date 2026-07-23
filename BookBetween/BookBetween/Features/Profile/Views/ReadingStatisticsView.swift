@@ -21,7 +21,12 @@ struct ReadingStatisticsView: View {
                         dismiss()
                     }
 
-                    // 독서 통계 상세 콘텐츠 영역
+                    ReadingStatisticsSummaryView(
+                        readBookCount: 24,
+                        reviewCount: 17,
+                        averageRating: 4.0
+                    )
+                    .padding(.horizontal, 20)
                 }
             }
         }
