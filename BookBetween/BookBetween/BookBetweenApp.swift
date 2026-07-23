@@ -23,18 +23,17 @@ struct BookBetweenApp: App {
 
         KakaoSDK.initSDK(appKey: kakaoNativeAppKey)
 
-        guard let stubBaseURL = URL(
-            string: "https://stub.bookbetween.local"
+        guard let apiBaseURL = URL(
+            string: "https://api.bookshelves-btween.com"
         ) else {
-            preconditionFailure("Stub Base URL을 생성하지 못했습니다.")
+            preconditionFailure("API Base URL을 생성하지 못했습니다.")
         }
 
         self.loginViewModel = LoginViewModel(
             kakaoLoginService: KakaoLoginService(),
             authService: AuthService(
-                baseURL: stubBaseURL,
-                provider: AuthStubProviderFactory.make(
-                    scenario: .pendingOnboarding
+                configuration: NetworkConfiguration(
+                    baseURL: apiBaseURL
                 )
             )
         )
