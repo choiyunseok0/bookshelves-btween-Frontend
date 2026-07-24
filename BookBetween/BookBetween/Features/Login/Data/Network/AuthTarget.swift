@@ -7,9 +7,11 @@ import Foundation
 import Alamofire
 import Moya
 
-nonisolated struct AuthTarget: TargetType {
+nonisolated struct AuthTarget: TargetType, AuthorizationRequirement {
     enum Endpoint {
         case socialLogin(SocialLoginRequestDTO)
+        case logout
+        case reissue(TokenReissueRequestDTO)
     }
 
     let baseURL: URL
@@ -19,12 +21,16 @@ nonisolated struct AuthTarget: TargetType {
         switch endpoint {
         case .socialLogin:
             return "/api/v1/auth/social-login"
+        case .logout:
+            return "/api/v1/auth/logout"
+        case .reissue:
+            return "/api/v1/auth/reissue"
         }
     }
 
     var method: Moya.Method {
         switch endpoint {
-        case .socialLogin:
+        case .socialLogin, .logout, .reissue:
             return .post
         }
     }
@@ -33,6 +39,19 @@ nonisolated struct AuthTarget: TargetType {
         switch endpoint {
         case .socialLogin(let request):
             return .requestJSONEncodable(request)
+        case .logout:
+            return .requestPlain
+        case .reissue(let request):
+            return .requestJSONEncodable(request)
+        }
+    }
+
+    var requiresAuthorization: Bool {
+        switch endpoint {
+        case .socialLogin, .reissue:
+            return false
+        case .logout:
+            return true
         }
     }
 

@@ -13,6 +13,7 @@ protocol HomeServiceProtocol {
 final class HomeService: HomeServiceProtocol {
     private let baseURL: URL
     private let provider: MoyaProvider<HomeTarget>
+    private let requestExecutor: AuthenticatedRequestExecutor
 
     init(configuration: NetworkConfiguration) {
         self.baseURL = configuration.baseURL
@@ -21,11 +22,17 @@ final class HomeService: HomeServiceProtocol {
                 AuthorizationPlugin(accessToken: configuration.accessToken)
             ]
         )
+        self.requestExecutor = AuthenticatedRequestExecutor(
+            reissueTokens: configuration.reissueTokens
+        )
     }
 
     init(baseURL: URL, provider: MoyaProvider<HomeTarget>) {
         self.baseURL = baseURL
         self.provider = provider
+        self.requestExecutor = AuthenticatedRequestExecutor(
+            reissueTokens: nil
+        )
     }
 
     static func stubbed() -> HomeService {
@@ -37,14 +44,16 @@ final class HomeService: HomeServiceProtocol {
     }
 
     func fetchHome() async throws -> Home {
-        do {
-            let response = try await provider.requestAsync(
-                HomeTarget(baseURL: baseURL, endpoint: .fetchHome)
-            )
-            let result = try response.decodePayload(HomeResultDTO.self)
-            return try result.toDomain()
-        } catch let error as MoyaError {
-            throw NetworkError.transport(error)
+        try await requestExecutor.execute {
+            do {
+                let response = try await provider.requestAsync(
+                    HomeTarget(baseURL: baseURL, endpoint: .fetchHome)
+                )
+                let result = try response.decodePayload(HomeResultDTO.self)
+                return try result.toDomain()
+            } catch let error as MoyaError {
+                throw NetworkError.transport(error)
+            }
         }
     }
 }

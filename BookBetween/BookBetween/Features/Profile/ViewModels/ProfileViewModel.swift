@@ -14,8 +14,12 @@ final class ProfileViewModel {
     // MARK: - 속성
 
     private let calendar: Calendar
+    private let memberService: MemberServiceProtocol?
 
     var displayedMonth: Date
+    private(set) var profile: MemberProfile?
+    private(set) var isLoading = false
+    var errorMessage: String?
 
     var calendarDays: [CalendarDay] {
         makeCalendarDays(for: displayedMonth)
@@ -24,6 +28,7 @@ final class ProfileViewModel {
     // MARK: - 초기화
 
     init(
+        memberService: MemberServiceProtocol? = nil,
         calendar: Calendar = .current,
         displayedMonth: Date = Date()
     ) {
@@ -31,9 +36,27 @@ final class ProfileViewModel {
         sundayFirstCalendar.firstWeekday = 1
 
         self.calendar = sundayFirstCalendar
+        self.memberService = memberService
         self.displayedMonth = sundayFirstCalendar.date(
             from: sundayFirstCalendar.dateComponents([.year, .month], from: displayedMonth)
         ) ?? displayedMonth
+    }
+
+    func fetchMyProfile() async {
+        guard let memberService,
+              !isLoading else {
+            return
+        }
+
+        isLoading = true
+        errorMessage = nil
+        defer { isLoading = false }
+
+        do {
+            profile = try await memberService.fetchMyProfile()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 
     // MARK: - 월 이동

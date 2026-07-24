@@ -13,20 +13,44 @@ extension Response { // 데이터 가공 + 검증
         _ type: Payload.Type,
         decoder: JSONDecoder = JSONDecoder()
     ) throws -> Payload {
-        let response: APIResponseDTO<Payload>
+        let metadata: APIResponseMetadataDTO
 
         do {
-            response = try decoder.decode(APIResponseDTO<Payload>.self, from: data)
+            metadata = try decoder.decode(
+                APIResponseMetadataDTO.self,
+                from: data
+            )
         } catch let error as DecodingError {
             throw NetworkError.decoding(error)
         }
 
-        guard (200..<300).contains(statusCode), response.isSuccess else {
+        guard (200..<300).contains(statusCode), metadata.isSuccess else {
+            #if DEBUG
+            print("""
+            [API Error]
+            URL: \(request?.url?.absoluteString ?? "확인 불가")
+            HTTP: \(statusCode)
+            code: \(metadata.code)
+            message: \(metadata.message)
+            """)
+            #endif
+
             throw NetworkError.server(
                 statusCode: statusCode,
-                code: response.code,
-                message: response.message
+                code: metadata.code,
+                message: metadata.message
             )
+        }
+
+        let response: APIResponseDTO<Payload>
+
+        do {
+            response = try decoder.decode(
+                APIResponseDTO<Payload>.self,
+                from: data
+            )
+        } catch let error as DecodingError {
+            throw NetworkError.decoding(error)
         }
 
         guard let result = response.result else {

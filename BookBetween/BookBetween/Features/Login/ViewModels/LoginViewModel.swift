@@ -24,6 +24,10 @@ enum LoginViewState: Equatable {
 final class LoginViewModel {
     private let kakaoLoginService: KakaoLoginServiceProtocol
     private let authService: AuthServiceProtocol
+    private let authTokenStore: AuthTokenStoreProtocol
+
+    @ObservationIgnored
+    private var reissueTask: Task<Void, Error>?
 
     private(set) var state: LoginViewState = .idle
 
@@ -33,10 +37,12 @@ final class LoginViewModel {
 
     init(
         kakaoLoginService: KakaoLoginServiceProtocol,
-        authService: AuthServiceProtocol
+        authService: AuthServiceProtocol,
+        authTokenStore: AuthTokenStoreProtocol = AuthTokenStore()
     ) {
         self.kakaoLoginService = kakaoLoginService
         self.authService = authService
+        self.authTokenStore = authTokenStore
     }
 
     func loginWithKakao() async {
@@ -89,6 +95,53 @@ final class LoginViewModel {
         state = .success(.main)
     }
 
+    func logout() async throws {
+        try await authService.logout()
+        try authTokenStore.clearSession()
+        state = .idle
+    }
+
+    func reissueTokens() async throws {
+        if let reissueTask {
+            return try await reissueTask.value
+        }
+
+        let task = Task { [authService, authTokenStore] in
+            guard let refreshToken = try authTokenStore.refreshToken(),
+                  !refreshToken.isEmpty else {
+                throw LoginViewModelError.missingRefreshToken
+            }
+
+            let result = try await authService.reissue(
+                refreshToken: refreshToken
+            )
+
+            guard !result.accessToken.isEmpty,
+                  !result.refreshToken.isEmpty else {
+                throw LoginViewModelError.missingServiceTokens
+            }
+
+            try authTokenStore.replaceWithSession(
+                accessToken: result.accessToken,
+                refreshToken: result.refreshToken
+            )
+        }
+
+        reissueTask = task
+        defer { reissueTask = nil }
+
+        do {
+            try await task.value
+        } catch {
+            if Self.requiresLoginAfterReissueFailure(error) {
+                try? authTokenStore.clearSession()
+                state = .idle
+            }
+
+            throw error
+        }
+    }
+
     var errorMessage: String? {
         guard case .failure(let message) = state else {
             return nil
@@ -106,19 +159,29 @@ final class LoginViewModel {
             providerToken: providerToken
         )
 
-        return try Self.makeSuccessState(from: result)
+        return try makeSuccessState(from: result)
     }
 
-    private static func makeSuccessState(
+    private func makeSuccessState(
         from result: SocialLoginResultDTO
     ) throws -> LoginViewState {
         switch result.memberStatus {
         case .pendingOnboarding:
-            try validateServiceTokens(in: result)
+            let tokens = try Self.serviceTokens(from: result)
+            try authTokenStore.replaceWithSession(
+                accessToken: tokens.accessToken,
+                refreshToken: tokens.refreshToken
+            )
+            printSessionTokenStorageStatus()
             return .success(.accountSetup)
 
         case .active:
-            try validateServiceTokens(in: result)
+            let tokens = try Self.serviceTokens(from: result)
+            try authTokenStore.replaceWithSession(
+                accessToken: tokens.accessToken,
+                refreshToken: tokens.refreshToken
+            )
+            printSessionTokenStorageStatus()
             return .success(.main)
 
         case .withdrawn:
@@ -126,6 +189,7 @@ final class LoginViewModel {
                   !restoreToken.isEmpty else {
                 throw LoginViewModelError.missingRestoreToken
             }
+            try authTokenStore.replaceWithRestoreToken(restoreToken)
             return .success(.accountRecovery)
 
         case .suspended:
@@ -136,14 +200,44 @@ final class LoginViewModel {
         }
     }
 
-    private static func validateServiceTokens(
-        in result: SocialLoginResultDTO
-    ) throws {
+    private static func serviceTokens(
+        from result: SocialLoginResultDTO
+    ) throws -> (accessToken: String, refreshToken: String) {
         guard let accessToken = result.accessToken,
               !accessToken.isEmpty,
               let refreshToken = result.refreshToken,
               !refreshToken.isEmpty else {
             throw LoginViewModelError.missingServiceTokens
+        }
+
+        return (accessToken, refreshToken)
+    }
+
+    private func printSessionTokenStorageStatus() {
+        #if DEBUG
+        let accessToken = try? authTokenStore.accessToken()
+        let refreshToken = try? authTokenStore.refreshToken()
+
+        print("""
+        [Keychain]
+        accessToken 저장: \(accessToken?.isEmpty == false)
+        refreshToken 저장: \(refreshToken?.isEmpty == false)
+        """)
+        #endif
+    }
+
+    private static func requiresLoginAfterReissueFailure(
+        _ error: Error
+    ) -> Bool {
+        guard let networkError = error as? NetworkError else {
+            return false
+        }
+
+        switch networkError {
+        case .server(let statusCode, _, _):
+            return statusCode == 401 || statusCode == 403
+        case .transport, .decoding, .emptyResult:
+            return false
         }
     }
 
@@ -151,6 +245,7 @@ final class LoginViewModel {
 
 private enum LoginViewModelError: LocalizedError {
     case missingServiceTokens
+    case missingRefreshToken
     case missingRestoreToken
     case suspendedMember
     case unexpectedMemberStatus
@@ -159,6 +254,8 @@ private enum LoginViewModelError: LocalizedError {
         switch self {
         case .missingServiceTokens:
             return "로그인 토큰을 확인할 수 없습니다. 다시 시도해주세요."
+        case .missingRefreshToken:
+            return "토큰을 재발급할 수 없습니다. 다시 로그인해주세요."
         case .missingRestoreToken:
             return "계정 복구 정보를 확인할 수 없습니다. 다시 로그인해주세요."
         case .suspendedMember:

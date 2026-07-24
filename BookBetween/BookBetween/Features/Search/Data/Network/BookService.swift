@@ -15,6 +15,7 @@ protocol BookServiceProtocol {
 final class BookService: BookServiceProtocol {
     private let baseURL: URL
     private let provider: MoyaProvider<BookTarget>
+    private let requestExecutor: AuthenticatedRequestExecutor
 
     init(configuration: NetworkConfiguration) {
         self.baseURL = configuration.baseURL
@@ -23,11 +24,17 @@ final class BookService: BookServiceProtocol {
                 AuthorizationPlugin(accessToken: configuration.accessToken)
             ]
         )
+        self.requestExecutor = AuthenticatedRequestExecutor(
+            reissueTokens: configuration.reissueTokens
+        )
     }
 
     init(baseURL: URL, provider: MoyaProvider<BookTarget>) {
         self.baseURL = baseURL
         self.provider = provider
+        self.requestExecutor = AuthenticatedRequestExecutor(
+            reissueTokens: nil
+        )
     }
 
     static func stubbed() -> BookService {
@@ -43,38 +50,56 @@ final class BookService: BookServiceProtocol {
         page: Int = 1,
         size: Int = 15
     ) async throws -> BookSearchPage {
-        do {
-            let response = try await provider.requestAsync(
-                BookTarget(
-                    baseURL: baseURL,
-                    endpoint: .search(query: query, page: page, size: size)
+        try await requestExecutor.execute {
+            do {
+                let response = try await provider.requestAsync(
+                    BookTarget(
+                        baseURL: baseURL,
+                        endpoint: .search(query: query, page: page, size: size)
+                    )
                 )
-            )
-            return try response.decodePayload(BookSearchResultDTO.self).toDomain()
-        } catch let error as MoyaError {
-            throw NetworkError.transport(error)
+                return try response.decodePayload(
+                    BookSearchResultDTO.self
+                ).toDomain()
+            } catch let error as MoyaError {
+                throw NetworkError.transport(error)
+            }
         }
     }
 
     func fetchBookDetail(isbn: String) async throws -> BookDetail {
-        do {
-            let response = try await provider.requestAsync(
-                BookTarget(baseURL: baseURL, endpoint: .detail(isbn: isbn))
-            )
-            return try response.decodePayload(BookDetailResultDTO.self).toDomain()
-        } catch let error as MoyaError {
-            throw NetworkError.transport(error)
+        try await requestExecutor.execute {
+            do {
+                let response = try await provider.requestAsync(
+                    BookTarget(
+                        baseURL: baseURL,
+                        endpoint: .detail(isbn: isbn)
+                    )
+                )
+                return try response.decodePayload(
+                    BookDetailResultDTO.self
+                ).toDomain()
+            } catch let error as MoyaError {
+                throw NetworkError.transport(error)
+            }
         }
     }
 
     func fetchRecentSearches() async throws -> [RecentSearchItem] {
-        do {
-            let response = try await provider.requestAsync(
-                BookTarget(baseURL: baseURL, endpoint: .recentSearches)
-            )
-            return try response.decodePayload(RecentSearchResultDTO.self).toDomain()
-        } catch let error as MoyaError {
-            throw NetworkError.transport(error)
+        try await requestExecutor.execute {
+            do {
+                let response = try await provider.requestAsync(
+                    BookTarget(
+                        baseURL: baseURL,
+                        endpoint: .recentSearches
+                    )
+                )
+                return try response.decodePayload(
+                    RecentSearchResultDTO.self
+                ).toDomain()
+            } catch let error as MoyaError {
+                throw NetworkError.transport(error)
+            }
         }
     }
 }

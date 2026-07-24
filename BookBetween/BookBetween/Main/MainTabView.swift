@@ -12,6 +12,17 @@ struct MainTabView: View {
     @State private var hideTabBar = false
     @State private var homeNavigationPath = NavigationPath()
 
+    private let memberService: MemberServiceProtocol?
+    private let onLogout: () async throws -> Void
+
+    init(
+        memberService: MemberServiceProtocol? = nil,
+        onLogout: @escaping () async throws -> Void = {}
+    ) {
+        self.memberService = memberService
+        self.onLogout = onLogout
+    }
+
     var body: some View {
         ZStack(alignment: .bottom) {
             Group {
@@ -33,7 +44,14 @@ struct MainTabView: View {
                 case .myLibrary:
                     NavigationStack { MyLibraryView() }
                 case .profile:
-                    NavigationStack { ProfileView() }
+                    NavigationStack {
+                        ProfileView(
+                            viewModel: ProfileViewModel(
+                                memberService: memberService
+                            ),
+                            onLogout: onLogout
+                        )
+                    }
                 }
             }
             .ignoresSafeArea(.keyboard, edges: .bottom)

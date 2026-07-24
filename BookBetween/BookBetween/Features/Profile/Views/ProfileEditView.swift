@@ -12,6 +12,16 @@ struct ProfileEditView: View {
     @State private var generatedNickname = GeneratedNickname.placeholder
     @State private var selectedProfileBackground: ProfileBackgroundColor = .brown
     @State private var selectedGenres: Set<String> = ["사회과학", "문학"]
+    @State private var isLoggingOut = false
+    @State private var logoutErrorMessage: String?
+
+    private let onLogout: () async throws -> Void
+
+    init(
+        onLogout: @escaping () async throws -> Void = {}
+    ) {
+        self.onLogout = onLogout
+    }
 
     var body: some View {
         ZStack {
@@ -47,7 +57,9 @@ struct ProfileEditView: View {
                             // 프로필 저장 기능 연결 시 동작 추가
                         },
                         onLogout: {
-                            // 로그아웃 기능 연결 시 동작 추가
+                            Task {
+                                await logout()
+                            }
                         },
                         onWithdraw: {
                             // 회원 탈퇴 기능 연결 시 동작 추가
@@ -59,6 +71,38 @@ struct ProfileEditView: View {
         }
         .toolbar(.hidden, for: .navigationBar)
         .toolbar(.hidden, for: .tabBar)
+        .alert(
+            "로그아웃에 실패했습니다.",
+            isPresented: Binding(
+                get: { logoutErrorMessage != nil },
+                set: { isPresented in
+                    if !isPresented {
+                        logoutErrorMessage = nil
+                    }
+                }
+            )
+        ) {
+            Button("확인", role: .cancel) {
+                logoutErrorMessage = nil
+            }
+        } message: {
+            Text(logoutErrorMessage ?? "")
+        }
+    }
+
+    private func logout() async {
+        guard !isLoggingOut else {
+            return
+        }
+
+        isLoggingOut = true
+        defer { isLoggingOut = false }
+
+        do {
+            try await onLogout()
+        } catch {
+            logoutErrorMessage = error.localizedDescription
+        }
     }
 }
 
