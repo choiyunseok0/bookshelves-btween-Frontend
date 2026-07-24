@@ -10,12 +10,15 @@ import Foundation
 struct NetworkConfiguration { // 네트워크 설정
     let baseURL: URL
     let accessToken: () -> String?
+    let reissueTokens: (() async throws -> Void)?
 
     init(
         baseURL: URL,
-        accessToken: @escaping () -> String? = { nil }
+        accessToken: @escaping () -> String? = { nil },
+        reissueTokens: (() async throws -> Void)? = nil
     ) {
         self.baseURL = baseURL
         self.accessToken = accessToken
+        self.reissueTokens = reissueTokens
     }
 }
