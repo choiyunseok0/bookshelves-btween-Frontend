@@ -29,14 +29,20 @@ struct BookBetweenApp: App {
             preconditionFailure("API Base URL을 생성하지 못했습니다.")
         }
 
+        let authTokenStore = AuthTokenStore()
+        let networkConfiguration = NetworkConfiguration(
+            baseURL: apiBaseURL,
+            accessToken: {
+                try? authTokenStore.accessToken()
+            }
+        )
+
         self.loginViewModel = LoginViewModel(
             kakaoLoginService: KakaoLoginService(),
             authService: AuthService(
-                configuration: NetworkConfiguration(
-                    baseURL: apiBaseURL
-                )
+                configuration: networkConfiguration
             ),
-            authTokenStore: AuthTokenStore()
+            authTokenStore: authTokenStore
         )
     }
 
