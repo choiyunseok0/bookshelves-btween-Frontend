@@ -172,6 +172,7 @@ final class LoginViewModel {
                 accessToken: tokens.accessToken,
                 refreshToken: tokens.refreshToken
             )
+            printSessionTokenStorageStatus()
             return .success(.accountSetup)
 
         case .active:
@@ -180,6 +181,7 @@ final class LoginViewModel {
                 accessToken: tokens.accessToken,
                 refreshToken: tokens.refreshToken
             )
+            printSessionTokenStorageStatus()
             return .success(.main)
 
         case .withdrawn:
@@ -209,6 +211,19 @@ final class LoginViewModel {
         }
 
         return (accessToken, refreshToken)
+    }
+
+    private func printSessionTokenStorageStatus() {
+        #if DEBUG
+        let accessToken = try? authTokenStore.accessToken()
+        let refreshToken = try? authTokenStore.refreshToken()
+
+        print("""
+        [Keychain]
+        accessToken 저장: \(accessToken?.isEmpty == false)
+        refreshToken 저장: \(refreshToken?.isEmpty == false)
+        """)
+        #endif
     }
 
     private static func requiresLoginAfterReissueFailure(
