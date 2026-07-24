@@ -98,6 +98,7 @@ final class LoginViewModel {
     func logout() async throws {
         try await authService.logout()
         try authTokenStore.clearSession()
+        printSessionTokenDeletionStatus()
         state = .idle
     }
 
@@ -223,6 +224,23 @@ final class LoginViewModel {
         accessToken 저장: \(accessToken?.isEmpty == false)
         refreshToken 저장: \(refreshToken?.isEmpty == false)
         """)
+        #endif
+    }
+
+    private func printSessionTokenDeletionStatus() {
+        #if DEBUG
+        do {
+            let accessToken = try authTokenStore.accessToken()
+            let refreshToken = try authTokenStore.refreshToken()
+
+            print("""
+            [Keychain]
+            accessToken 삭제: \(accessToken == nil)
+            refreshToken 삭제: \(refreshToken == nil)
+            """)
+        } catch {
+            print("[Keychain] 토큰 삭제 상태 확인 실패")
+        }
         #endif
     }
 
