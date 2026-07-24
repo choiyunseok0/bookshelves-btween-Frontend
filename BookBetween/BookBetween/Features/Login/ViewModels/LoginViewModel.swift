@@ -26,6 +26,9 @@ final class LoginViewModel {
     private let authService: AuthServiceProtocol
     private let authTokenStore: AuthTokenStoreProtocol
 
+    @ObservationIgnored
+    private var reissueTask: Task<Void, Error>?
+
     private(set) var state: LoginViewState = .idle
 
     var isLoading: Bool {
@@ -98,6 +101,47 @@ final class LoginViewModel {
         state = .idle
     }
 
+    func reissueTokens() async throws {
+        if let reissueTask {
+            return try await reissueTask.value
+        }
+
+        let task = Task { [authService, authTokenStore] in
+            guard let refreshToken = try authTokenStore.refreshToken(),
+                  !refreshToken.isEmpty else {
+                throw LoginViewModelError.missingRefreshToken
+            }
+
+            let result = try await authService.reissue(
+                refreshToken: refreshToken
+            )
+
+            guard !result.accessToken.isEmpty,
+                  !result.refreshToken.isEmpty else {
+                throw LoginViewModelError.missingServiceTokens
+            }
+
+            try authTokenStore.replaceWithSession(
+                accessToken: result.accessToken,
+                refreshToken: result.refreshToken
+            )
+        }
+
+        reissueTask = task
+        defer { reissueTask = nil }
+
+        do {
+            try await task.value
+        } catch {
+            if Self.requiresLoginAfterReissueFailure(error) {
+                try? authTokenStore.clearSession()
+                state = .idle
+            }
+
+            throw error
+        }
+    }
+
     var errorMessage: String? {
         guard case .failure(let message) = state else {
             return nil
@@ -167,10 +211,26 @@ final class LoginViewModel {
         return (accessToken, refreshToken)
     }
 
+    private static func requiresLoginAfterReissueFailure(
+        _ error: Error
+    ) -> Bool {
+        guard let networkError = error as? NetworkError else {
+            return false
+        }
+
+        switch networkError {
+        case .server(let statusCode, _, _):
+            return statusCode == 401 || statusCode == 403
+        case .transport, .decoding, .emptyResult:
+            return false
+        }
+    }
+
 }
 
 private enum LoginViewModelError: LocalizedError {
     case missingServiceTokens
+    case missingRefreshToken
     case missingRestoreToken
     case suspendedMember
     case unexpectedMemberStatus
@@ -179,6 +239,8 @@ private enum LoginViewModelError: LocalizedError {
         switch self {
         case .missingServiceTokens:
             return "로그인 토큰을 확인할 수 없습니다. 다시 시도해주세요."
+        case .missingRefreshToken:
+            return "토큰을 재발급할 수 없습니다. 다시 로그인해주세요."
         case .missingRestoreToken:
             return "계정 복구 정보를 확인할 수 없습니다. 다시 로그인해주세요."
         case .suspendedMember:

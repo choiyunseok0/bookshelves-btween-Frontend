@@ -12,6 +12,7 @@ protocol AuthServiceProtocol {
         providerToken: String
     ) async throws -> SocialLoginResultDTO
     func logout() async throws
+    func reissue(refreshToken: String) async throws -> TokenReissueResultDTO
 }
 
 final class AuthService: AuthServiceProtocol {
@@ -86,6 +87,38 @@ final class AuthService: AuthServiceProtocol {
             HTTP: \(response.statusCode)
             """)
             #endif
+        } catch let error as MoyaError {
+            throw NetworkError.transport(error)
+        }
+    }
+
+    func reissue(
+        refreshToken: String
+    ) async throws -> TokenReissueResultDTO {
+        let request = TokenReissueRequestDTO(
+            refreshToken: refreshToken
+        )
+
+        do {
+            let response = try await provider.requestAsync(
+                AuthTarget(
+                    baseURL: baseURL,
+                    endpoint: .reissue(request)
+                )
+            )
+            let result = try response.decodePayload(
+                TokenReissueResultDTO.self
+            )
+
+            #if DEBUG
+            print("""
+            [TokenReissue]
+            URL: \(response.request?.url?.absoluteString ?? "확인 불가")
+            HTTP: \(response.statusCode)
+            """)
+            #endif
+
+            return result
         } catch let error as MoyaError {
             throw NetworkError.transport(error)
         }
