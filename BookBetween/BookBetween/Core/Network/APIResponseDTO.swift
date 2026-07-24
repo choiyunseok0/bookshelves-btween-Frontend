@@ -14,4 +14,10 @@ struct APIResponseDTO<Payload: Decodable>: Decodable { // 서버 응답 공통 f
     let result: Payload?
 }
 
+nonisolated struct APIResponseMetadataDTO: Decodable {
+    let isSuccess: Bool
+    let code: String
+    let message: String
+}
+
 nonisolated struct APIEmptyResultDTO: Decodable {}
