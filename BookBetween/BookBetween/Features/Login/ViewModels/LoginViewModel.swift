@@ -24,6 +24,7 @@ enum LoginViewState: Equatable {
 final class LoginViewModel {
     private let kakaoLoginService: KakaoLoginServiceProtocol
     private let authService: AuthServiceProtocol
+    private let authTokenStore: AuthTokenStoreProtocol
 
     private(set) var state: LoginViewState = .idle
 
@@ -33,10 +34,12 @@ final class LoginViewModel {
 
     init(
         kakaoLoginService: KakaoLoginServiceProtocol,
-        authService: AuthServiceProtocol
+        authService: AuthServiceProtocol,
+        authTokenStore: AuthTokenStoreProtocol = AuthTokenStore()
     ) {
         self.kakaoLoginService = kakaoLoginService
         self.authService = authService
+        self.authTokenStore = authTokenStore
     }
 
     func loginWithKakao() async {
@@ -106,19 +109,27 @@ final class LoginViewModel {
             providerToken: providerToken
         )
 
-        return try Self.makeSuccessState(from: result)
+        return try makeSuccessState(from: result)
     }
 
-    private static func makeSuccessState(
+    private func makeSuccessState(
         from result: SocialLoginResultDTO
     ) throws -> LoginViewState {
         switch result.memberStatus {
         case .pendingOnboarding:
-            try validateServiceTokens(in: result)
+            let tokens = try Self.serviceTokens(from: result)
+            try authTokenStore.replaceWithSession(
+                accessToken: tokens.accessToken,
+                refreshToken: tokens.refreshToken
+            )
             return .success(.accountSetup)
 
         case .active:
-            try validateServiceTokens(in: result)
+            let tokens = try Self.serviceTokens(from: result)
+            try authTokenStore.replaceWithSession(
+                accessToken: tokens.accessToken,
+                refreshToken: tokens.refreshToken
+            )
             return .success(.main)
 
         case .withdrawn:
@@ -126,6 +137,7 @@ final class LoginViewModel {
                   !restoreToken.isEmpty else {
                 throw LoginViewModelError.missingRestoreToken
             }
+            try authTokenStore.replaceWithRestoreToken(restoreToken)
             return .success(.accountRecovery)
 
         case .suspended:
@@ -136,15 +148,17 @@ final class LoginViewModel {
         }
     }
 
-    private static func validateServiceTokens(
-        in result: SocialLoginResultDTO
-    ) throws {
+    private static func serviceTokens(
+        from result: SocialLoginResultDTO
+    ) throws -> (accessToken: String, refreshToken: String) {
         guard let accessToken = result.accessToken,
               !accessToken.isEmpty,
               let refreshToken = result.refreshToken,
               !refreshToken.isEmpty else {
             throw LoginViewModelError.missingServiceTokens
         }
+
+        return (accessToken, refreshToken)
     }
 
 }

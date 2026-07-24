@@ -35,7 +35,8 @@ struct BookBetweenApp: App {
                 configuration: NetworkConfiguration(
                     baseURL: apiBaseURL
                 )
-            )
+            ),
+            authTokenStore: AuthTokenStore()
         )
     }
 
