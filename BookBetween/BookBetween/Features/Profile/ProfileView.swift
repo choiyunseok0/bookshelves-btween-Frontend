@@ -6,10 +6,11 @@
 
 import SwiftUI
 
+@MainActor
 struct ProfileView: View {
     // MARK: - 속성
 
-    @State private var viewModel = ProfileViewModel()
+    @State private var viewModel: ProfileViewModel
     private let onLogout: () async throws -> Void
 
     private let weekdays = ["일", "월", "화", "수", "목", "금", "토"]
@@ -17,6 +18,15 @@ struct ProfileView: View {
     init(
         onLogout: @escaping () async throws -> Void = {}
     ) {
+        _viewModel = State(initialValue: ProfileViewModel())
+        self.onLogout = onLogout
+    }
+
+    init(
+        viewModel: ProfileViewModel,
+        onLogout: @escaping () async throws -> Void
+    ) {
+        _viewModel = State(initialValue: viewModel)
         self.onLogout = onLogout
     }
 
@@ -63,6 +73,31 @@ struct ProfileView: View {
         }
         .background(Color.beige100)
         .toolbar(.hidden, for: .navigationBar)
+        .overlay {
+            if viewModel.isLoading {
+                ProgressView()
+            }
+        }
+        .task {
+            await viewModel.fetchMyProfile()
+        }
+        .alert(
+            "내 정보를 불러오지 못했습니다.",
+            isPresented: Binding(
+                get: { viewModel.errorMessage != nil },
+                set: { isPresented in
+                    if !isPresented {
+                        viewModel.errorMessage = nil
+                    }
+                }
+            )
+        ) {
+            Button("확인", role: .cancel) {
+                viewModel.errorMessage = nil
+            }
+        } message: {
+            Text(viewModel.errorMessage ?? "")
+        }
     }
 
     private var profileCard: some View {
@@ -70,12 +105,12 @@ struct ProfileView: View {
             profileImage
 
             VStack(alignment: .leading, spacing: 0) {
-                Text("책먹는 여우님")
+                Text("\(viewModel.profile?.nickname ?? "책 먹는 여우")님")
                     .head3Style
                     .foregroundStyle(Color.gray800)
                     .padding(.bottom, 5)
 
-                Text("가입 124일")
+                Text("가입 \(viewModel.profile?.joinedDays ?? 124)일")
                     .body2RegularStyle
                     .foregroundStyle(Color.gray600)
                     .padding(.bottom, 8)

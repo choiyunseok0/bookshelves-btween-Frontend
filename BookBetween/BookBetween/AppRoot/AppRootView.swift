@@ -13,9 +13,14 @@ struct AppRootView: View {
 
     @State private var launchPhase: AppLaunchPhase = .splash
     @State private var loginViewModel: LoginViewModel
+    private let memberService: MemberServiceProtocol?
 
-    init(loginViewModel: LoginViewModel) {
+    init(
+        loginViewModel: LoginViewModel,
+        memberService: MemberServiceProtocol? = nil
+    ) {
         _loginViewModel = State(initialValue: loginViewModel)
+        self.memberService = memberService
     }
 
     var body: some View {
@@ -63,9 +68,12 @@ struct AppRootView: View {
             }
 
         case .success(.main):
-            MainTabView {
-                try await loginViewModel.logout()
-            }
+            MainTabView(
+                memberService: memberService,
+                onLogout: {
+                    try await loginViewModel.logout()
+                }
+            )
 
         case .success(.accountRecovery):
             AccountRecoveryPlaceholderView()
