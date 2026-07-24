@@ -113,6 +113,10 @@ final class LoginViewModel {
                 throw LoginViewModelError.missingRefreshToken
             }
 
+            #if DEBUG
+            let previousAccessToken = try? authTokenStore.accessToken()
+            #endif
+
             let result = try await authService.reissue(
                 refreshToken: refreshToken
             )
@@ -126,6 +130,21 @@ final class LoginViewModel {
                 accessToken: result.accessToken,
                 refreshToken: result.refreshToken
             )
+
+            #if DEBUG
+            do {
+                let storedAccessToken = try authTokenStore.accessToken()
+                let storedRefreshToken = try authTokenStore.refreshToken()
+
+                print("""
+                [TokenRotation]
+                accessToken 교체: \(previousAccessToken != storedAccessToken && storedAccessToken?.isEmpty == false)
+                refreshToken 교체: \(refreshToken != storedRefreshToken && storedRefreshToken?.isEmpty == false)
+                """)
+            } catch {
+                print("[TokenRotation] Keychain 토큰 교체 상태 확인 실패")
+            }
+            #endif
         }
 
         reissueTask = task
