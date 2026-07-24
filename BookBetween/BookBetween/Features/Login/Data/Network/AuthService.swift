@@ -11,6 +11,7 @@ protocol AuthServiceProtocol {
         provider: SocialProvider,
         providerToken: String
     ) async throws -> SocialLoginResultDTO
+    func logout() async throws
 }
 
 final class AuthService: AuthServiceProtocol {
@@ -19,7 +20,11 @@ final class AuthService: AuthServiceProtocol {
 
     init(configuration: NetworkConfiguration) {
         self.baseURL = configuration.baseURL
-        self.provider = MoyaProvider<AuthTarget>()
+        self.provider = MoyaProvider<AuthTarget>(
+            plugins: [
+                AuthorizationPlugin(accessToken: configuration.accessToken)
+            ]
+        )
     }
 
     init(baseURL: URL, provider: MoyaProvider<AuthTarget>) {
@@ -57,6 +62,30 @@ final class AuthService: AuthServiceProtocol {
             #endif
 
             return result
+        } catch let error as MoyaError {
+            throw NetworkError.transport(error)
+        }
+    }
+
+    func logout() async throws {
+        do {
+            let response = try await provider.requestAsync(
+                AuthTarget(
+                    baseURL: baseURL,
+                    endpoint: .logout
+                )
+            )
+            let _: APIEmptyResultDTO = try response.decodePayload(
+                APIEmptyResultDTO.self
+            )
+
+            #if DEBUG
+            print("""
+            [Logout]
+            URL: \(response.request?.url?.absoluteString ?? "확인 불가")
+            HTTP: \(response.statusCode)
+            """)
+            #endif
         } catch let error as MoyaError {
             throw NetworkError.transport(error)
         }

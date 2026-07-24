@@ -8,6 +8,10 @@
 import Foundation
 import Moya
 
+nonisolated protocol AuthorizationRequirement {
+    var requiresAuthorization: Bool { get }
+}
+
 final class AuthorizationPlugin: PluginType { // 로그인 필요한 API 호출때마다 자동 토큰 주입
     private let accessToken: () -> String?
 
@@ -16,6 +20,11 @@ final class AuthorizationPlugin: PluginType { // 로그인 필요한 API 호출�
     }
 
     func prepare(_ request: URLRequest, target: TargetType) -> URLRequest {
+        if let requirement = target as? AuthorizationRequirement,
+           !requirement.requiresAuthorization {
+            return request
+        }
+
         guard let token = accessToken(), !token.isEmpty else {
             return request
         }

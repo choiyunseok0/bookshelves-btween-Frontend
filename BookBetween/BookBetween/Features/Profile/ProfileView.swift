@@ -10,8 +10,15 @@ struct ProfileView: View {
     // MARK: - 속성
 
     @State private var viewModel = ProfileViewModel()
+    private let onLogout: () async throws -> Void
 
     private let weekdays = ["일", "월", "화", "수", "목", "금", "토"]
+
+    init(
+        onLogout: @escaping () async throws -> Void = {}
+    ) {
+        self.onLogout = onLogout
+    }
 
     private var displayedMonthTitle: String {
         viewModel.displayedMonth.formatted(
@@ -109,8 +116,8 @@ struct ProfileView: View {
     }
 
     private var editProfileButton: some View {
-        Button {
-            // 프로필 수정 화면 연결 시 동작 추가해야함
+        NavigationLink {
+            ProfileEditView(onLogout: onLogout)
         } label: {
             HStack(spacing: 4) {
                 Image("icon_pencil")

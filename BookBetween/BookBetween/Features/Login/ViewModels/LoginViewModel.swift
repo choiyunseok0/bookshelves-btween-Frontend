@@ -92,6 +92,12 @@ final class LoginViewModel {
         state = .success(.main)
     }
 
+    func logout() async throws {
+        try await authService.logout()
+        try authTokenStore.clearSession()
+        state = .idle
+    }
+
     var errorMessage: String? {
         guard case .failure(let message) = state else {
             return nil

@@ -63,7 +63,9 @@ struct AppRootView: View {
             }
 
         case .success(.main):
-            MainTabView()
+            MainTabView {
+                try await loginViewModel.logout()
+            }
 
         case .success(.accountRecovery):
             AccountRecoveryPlaceholderView()
